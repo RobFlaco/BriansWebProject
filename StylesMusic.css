@@ -212,4 +212,18 @@ nav .circle:hover{
         display: none;
     }
 }
+@media(max-width: 600px){
+    .music-player{
+        gap: 0;
+        width: 300px;
+    }
+    .controls div{
+    width: 40px;
+    height: 40px;
+    margin: 15px;
+    }
+    .album-art{
+    width: 150px;
+    }
+}
 
