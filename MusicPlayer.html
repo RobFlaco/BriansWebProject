@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatable" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="StylesMusic.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+
+
+    <div id="container" class="container">
+
+        <div class="leftContainer">
+        <!-- Album List -->
+            <div id="albumList" class="album-list">
+                <H2>Albums</H2>
+                <div>
+                    <img onclick="setGrowth()" src="img/GROWTH.JPEG" class="albumSelector" alt="">
+                    <ul> <h1>GROWTH</h1> <p>by Rob Flaco</p> </ul>
+                </div>
+                <div>
+                    <img onclick="setYouth()" src="img/YOUTH.jpeg" class="albumSelector" alt="">
+                    <ul><h1>YOUTH</h1><p>by Rob Flaco</p></ul>
+                </div>
+                <div>
+                    <img onclick="setLifesBeenGreat()" src="img/LIFES-BEEN-GREAT.jpeg" class="albumSelector" alt="">
+                    <ul><h1>LIFE'S BEEN GREAT</h1><p>by Rob Flaco & JDS</p></ul>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Music Player -->
+
+        <div class="music-player">
+            <!-- Music Player Top Controls -->
+        <nav>
+            <div onclick="backHome()" class="circle">
+                <i class="fa-solid fa-angle-left"></i>
+            </div>
+            <div onclick="openMenu()" class="circle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </nav>
+
+        <img id=currArt src="" class="album-art" alt="">
+        
+        <h1 id="songName">Song-Name</h1>
+        <p id="songArtist">Rob Flaco</p>
+
+        <audio id="song" autoplay="false">
+            <source src="audio/GROWTH/1PassTheMic.wav" type="audio/wav">
+        </audio>
+        <input type="range" value="0" id="songSlider">
+
+        <div class="controls">
+            <div onclick="prevSong()"><i class="fa-solid fa-backward"></i></div>
+            <div onclick="playPause()"><i class="fa-solid fa-pause" id="ctrlIcon"></i></div>
+            <div onclick="nextSong()"><i class="fa-solid fa-forward"></i></div>
+        </div>
+        </div>
+
+        <!-- Song Names -->
+        
+        <div class="rightContainer">
+        
+            <div class="album-list">
+                <img id=listArt src="" class="albumSelector" alt="">
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+<script>
+        let songSlider = document.getElementById("songSlider");
+        let song = document.getElementById("song");
+        let ctrlIcon = document.getElementById("ctrlIcon");
+
+        const album = ['img/GROWTH.JPEG', 'img/YOUTH.jpeg', 'img/LIFES-BEEN-GREAT.jpeg'];
+        const album_artists = ['Rob Flaco', 'Rob Flaco', 'Rob Flaco & JDS'];
+        const growth_songs = ['audio/GROWTH/1PassTheMic.wav', 'audio/GROWTH/2Dreamin.wav', 
+            'audio/GROWTH/3Lungs.wav', 'audio/GROWTH/4Pressure.wav', 'audio/GROWTH/5over.wav'];
+        const growth_song_names = ['Pass The Mic', 'Dreamin', 'Lungs', 'Pressure', 'Over'];
+
+        const youth_songs = ['audio/YOUTH/1ThatKid.wav', 'audio/YOUTH/2SmokeBigDope.wav', 'audio/YOUTH/3Slide.wav', 'audio/YOUTH/4VibeWithMe.wav', 
+        'audio/YOUTH/5Blasphemy.wav', 'audio/YOUTH/6LayMeDown.wav', 'audio/YOUTH/7FloridaShit.wav', 'audio/YOUTH/8Cold.wav', 'audio/YOUTH/9Leave.wav'];
+        const youth_song_names = ['That Kid', 'Smoke Big Dope', 'Slide', 'Vibe Wit Me', 'Blasphemy',
+        'Lay Me Down', 'Florida Shit', 'Cold', 'Leave'];
+
+        const lifesBeenGreat_songs = ['audio/LifesBeenGreat/1Energy.wav', 'audio/LifesBeenGreat/2NoDrama.wav', 'audio/LifesBeenGreat/3Jazz.wav', 
+        'audio/LifesBeenGreat/4RightNow.wav', 'audio/LifesBeenGreat/5LifesBeenGreat.wav'];
+        const lifesBeenGreat_song_names = ['Energy', 'No Drama', 'Jazz', 'Right Now', 'Life\'s Been Great'];
+
+        let curr_album = 0;
+        let curr_song = 0;
+        const currArt = document.getElementById('currArt');
+
+        function setSongInfo(){
+                document.getElementById("songName").innerHTML = getCurrAlbumSongNames()[curr_song];
+                document.getElementById("songArtist").innerHTML = album_artists[curr_album];
+        }
+        function setGrowth(){
+            curr_album = 0;
+            currArt.src = album[curr_album];
+            listArt.src = album[curr_album];
+            curr_song = 0;
+            song.src = growth_songs[curr_song];
+            setSongInfo();
+            setPlay();
+            const container = document.getElementById("container");
+            container.style.background = "linear-gradient(180deg, #a60202, #170000)";
+        }
+        function setYouth(){
+            curr_album = 1;
+            currArt.src = album[curr_album];
+            listArt.src = album[curr_album];
+            curr_song = 0;
+            song.src = youth_songs[curr_song];
+            setSongInfo();
+            setPlay();
+            const container = document.getElementById("container");
+            container.style.background = "linear-gradient(180deg, #06aab9, #004811)";
+        }
+        function setLifesBeenGreat(){
+            curr_album = 2;
+            currArt.src = album[curr_album];
+            listArt.src = album[curr_album];
+            curr_song = 0;
+            song.src = lifesBeenGreat_songs[curr_song];
+            setSongInfo();
+            setPlay();
+            const container = document.getElementById("container");
+            container.style.background = "linear-gradient(180deg, #008c1c, #2900a3)";
+        }
+        function getCurrAlbumSongs(){
+            if(curr_album == 0){
+                return growth_songs;
+            }
+            else if(curr_album == 1){
+                return youth_songs;
+            }
+            else if(curr_album == 2){
+                return lifesBeenGreat_songs;
+            }
+        }
+        function getCurrAlbumSongNames(){
+            if(curr_album == 0){
+                return growth_song_names;
+            }
+            else if(curr_album == 1){
+                return youth_song_names;
+            }
+            else if(curr_album == 2){
+                return lifesBeenGreat_song_names;
+            }
+        }
+
+        function nextSong(){
+            if(curr_song < getCurrAlbumSongs().length - 1){
+                curr_song++;
+                song.src = getCurrAlbumSongs()[curr_song];
+                setSongInfo();
+                setPlay();
+
+            }
+            else {
+                curr_song = 0;
+                song.src = getCurrAlbumSongs()[curr_song];
+                setSongInfo();
+                setPlay
+            }
+        }
+        function prevSong(){
+            if(curr_song > 0){
+                curr_song--;
+                song.src = getCurrAlbumSongs()[curr_song];
+                setSongInfo();
+                setPlay();
+            }
+            else {
+                curr_song = getCurrAlbumSongs().length - 1;
+                song.src = getCurrAlbumSongs()[curr_song];
+                setSongInfo();
+                setPlay();
+            }
+        }
+
+
+
+
+        song.onloadmetadata = function(){
+            songSlider.max = song.duration;
+            songSlider.value = song.currentTime;
+        }
+        function setPlay(){
+            ctrlIcon.classList.remove("fa-play");
+            ctrlIcon.classList.add("fa-pause");
+        }
+        function setPause(){
+            ctrlIcon.classList.remove("fa-pause");
+            ctrlIcon.classList.add("fa-play");
+        }
+        function playPause(){
+            if(ctrlIcon.classList.contains("fa-pause")){
+                song.pause();
+                setPause();
+            } 
+            else {
+                song.play();
+                setPlay();
+            }
+        }
+        if(song.play()){
+            setInterval(()=>{
+                songSlider.value = song.currentTime;
+            },500);
+        }
+
+        songSlider.onchange = function(){
+            song.currentTime = songSlider.value;
+            song.play();
+            setPlay();
+        }
+        function backHome(){
+            window.location.href = "index.html";
+        }
+
+
+
+        setGrowth();
+        setPause();
+        song.pause();
+</script>
+
+</body>

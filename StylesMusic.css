@@ -1,0 +1,215 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: 0;
+    font-family: border-box;
+    font-family: 'Poppins';
+    text-decoration: none;
+    scroll-behavior: smooth;
+    list-style: none;
+}
+
+.container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #a60202, #170000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10vw;
+
+}
+
+.leftContainer{
+    width: 300px;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    text-align: left;
+    padding: 25px 35px;
+    border-radius: 0%;
+    border: 4px solid black;
+    border-radius: 12%;
+}
+.leftContainer img{
+    width: 75px;
+    border-radius: 12%;
+    border: 5px solid black;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.751);
+}
+.leftContainer img:hover{
+    transform: scale(1.1);
+}
+.leftContainer h1{
+    font-size: 20px;
+    font-weight: 400;
+    color: rgb(255, 255, 255);
+    margin-top: 20px;
+}
+.leftContainer h2{
+    font-size: 30px;
+    font-weight: 400;
+    color: rgb(255, 255, 255);
+    margin-bottom: 20px;
+    text-align: center;
+
+}
+.leftContainer p{
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+.album-list div{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin: 10px 0;
+}
+
+
+
+
+.rightContainer{
+    width: 300px;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    text-align: center;
+    padding: 25px 35px;
+    border-radius: 0%;
+    border: 4px solid black;
+    border-radius: 12%;
+}
+.rightContainer img{
+    width: 100px;
+    border-radius: 12%;
+    border: 5px solid black;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.751);
+}
+
+
+
+
+.music-player{
+    width: 400px;
+    background: rgba(0, 0, 0, 0.25);
+    text-align: center;
+    padding: 25px 35px;
+    border-radius: 0%;
+    border: 4px solid black;
+    border-radius: 12%;
+
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+nav .circle{
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    background: whitesmoke;
+    color: black;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.751);
+}
+nav .circle:hover{
+    transform: scale(1.1);
+}
+.album-art{
+    width: 220px;
+    border-radius: 50%;
+    border: 5px solid black;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.751);
+
+}
+.music-player h1{
+    font-size: 20px;
+    font-weight: 400;
+    color: rgb(255, 255, 255);
+    margin-top: 20px;
+}
+.music-player p{
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+#songSlider{
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgb(255, 255, 255);
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 40px 0;
+}
+#songSlider::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 30px;
+    height: 30px;
+    background: rgb(255, 0, 0);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid rgb(0, 0, 0);
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+#songSlider::-webkit-slider-thumb:hover{
+    transform: scale(1.2);
+}
+.controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.controls div:hover{
+    transform: scale(1.1);
+}
+.controls div{
+    width: 60px;
+    height: 60px;
+    margin: 20px;
+    background: white;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: rgb(255, 0, 0);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.751);
+    cursor: pointer;
+}
+.controls div:nth-child(2){
+    transform: scale(1.5);
+    background: rgb(255, 0, 0);
+    color: white;
+}
+.controls div:nth-child(2):hover{
+    transform: scale(1.6);
+}
+
+@media(max-width: 1600px){
+    .container{
+        gap: 7.5vw;
+    }
+}
+@media(max-width: 1500px){
+    .container{
+        gap: 5vw;
+    }
+}
+@media(max-width: 1400px){
+    .rightContainer{
+        display: none;
+    }
+    .container{
+        gap: 10vw;
+    }
+}
+@media(max-width: 1000px){
+    .leftContainer{
+        display: none;
+    }
+}
+

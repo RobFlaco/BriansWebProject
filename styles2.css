@@ -165,6 +165,58 @@ section{
 }
 
 
+
+.music-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap: 2rem;
+}
+.project-card{
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem;
+    border: 2px solid black;
+    border-radius: 3rem;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+.project-card:hover{
+    background-color: black;
+    color: white;
+    transform: translateY(-10px)scale(1.02);
+}
+.project-card img{
+    width: 20vw;
+    border-radius: 1rem;
+}
+.project-card:hover .btn{
+    border: 2px solid white;
+    color: white;
+}
+.project-card:hover .btn:hover{
+    border: 2px solid white;
+    background-color: white;
+    color: black;
+}
+.project-card h3{
+    font-size: 2rem;
+    font-weight: 500;
+    text-wrap: normal;
+}
+
+
+
+
+
+
+
+
+
+
 .section-title{
     font-size: 4rem;
     font-weight: 600;
@@ -277,44 +329,8 @@ section{
     .album-card img{
         width: 50vw;
     }
-}
-
-@media only screen and (max-width: 430px) {
-    header #menu-icon{
-        display: block;
-    }
-    .navbar{
-        position: absolute;
-        top: 100%;
-        margin-top: 1rem;
-        width: 100%;
-        padding: 1rem;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.9);
-        border-radius: 3rem;
-        display: none;
-    }
-    .navbar li{
-        margin-top: 1.5rem;
-        padding: 1rem;
-    }
-    .navbar.active{
-        display: block;
-    }
-    header{
-        padding: 1rem 5rem;
-        gap: 8rem;
-    }
-    header .logo{
-        font-size: 1.5rem;
-    }
-    .about-container img{
-        width: 80vw;
-    }
-    .album-card img{
+    .project-card img{
         width: 50vw;
     }
 }
+
