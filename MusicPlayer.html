@@ -69,8 +69,9 @@
         
         <div class="rightContainer">
         
-            <div class="album-list">
+            <div class="song-list">
                 <img id=listArt src="" class="albumSelector" alt="">
+                <ul id="songList"></ul>
             </div>
 
 
@@ -89,7 +90,7 @@
         const album = ['img/GROWTH.JPEG', 'img/YOUTH.jpeg', 'img/LIFES-BEEN-GREAT.jpeg'];
         const album_artists = ['Rob Flaco', 'Rob Flaco', 'Rob Flaco & JDS'];
         const growth_songs = ['audio/GROWTH/1PassTheMic.wav', 'audio/GROWTH/2Dreamin.wav', 
-            'audio/GROWTH/3Lungs.wav', 'audio/GROWTH/4Pressure.wav', 'audio/GROWTH/5Over.wav'];
+            'audio/GROWTH/3Lungs.wav', 'audio/GROWTH/4Pressure.wav', 'audio/GROWTH/5over.wav'];
         const growth_song_names = ['Pass The Mic', 'Dreamin', 'Lungs', 'Pressure', 'Over'];
 
         const youth_songs = ['audio/YOUTH/1ThatKid.wav', 'audio/YOUTH/2SmokeBigDope.wav', 'audio/YOUTH/3Slide.wav', 'audio/YOUTH/4VibeWithMe.wav', 
@@ -105,6 +106,51 @@
         let curr_song = 0;
         const currArt = document.getElementById('currArt');
 
+
+        function printCurrAlbumSongList(){
+            clearCurrAlbumSongList();
+            const songList = document.getElementById("songList");
+            songList.innerHTML = "<h1>" + getCurrAlbum() + "</h1>";
+            const songNames = getCurrAlbumSongNames();
+            for(let i = 0; i < songNames.length; i++){
+                const li = document.createElement("h2");
+                li.innerHTML = songNames[i];
+                li.setAttribute("data-song-index", i);
+                li.addEventListener("click", function(){
+                    curr_song = parseInt(this.getAttribute("data-song-index"));
+                    song.src = getCurrAlbumSongs()[curr_song];
+                    setSongInfo();
+                    setPlay();
+                });
+                const songIsActive = (i == curr_song);
+                songList.appendChild(li);
+            }
+        }
+        function highlightCurrSong(){
+            const songList = document.getElementById("songList");
+            const songItems = songList.getElementsByTagName("h2");
+            for(let i = 0; i < songItems.length; i++){
+                if(i == curr_song){
+                    songItems[i].style.transform = "scale(1.2)";
+                    songItems[i].prepend(document.createTextNode("- "));
+                    songItems[i].appendChild(document.createTextNode(" -"));
+                }
+                else{
+                    songItems[i].style.transform = "scale(1)";
+                    if(songItems[i].textContent.startsWith("- ")){
+                        songItems[i].textContent = songItems[i].textContent.replace("- ", "");
+                        songItems[i].textContent = songItems[i].textContent.replace(" -", "");
+                    }
+                }
+            }
+        }
+
+
+        function clearCurrAlbumSongList(){
+            const songList = document.getElementById("songList");
+            songList.innerHTML = "";
+        }
+
         function setSongInfo(){
                 document.getElementById("songName").innerHTML = getCurrAlbumSongNames()[curr_song];
                 document.getElementById("songArtist").innerHTML = album_artists[curr_album];
@@ -119,6 +165,8 @@
             setPlay();
             const container = document.getElementById("container");
             container.style.background = "linear-gradient(180deg, #a60202, #170000)";
+            printCurrAlbumSongList();
+            highlightCurrSong();
         }
         function setYouth(){
             curr_album = 1;
@@ -130,6 +178,8 @@
             setPlay();
             const container = document.getElementById("container");
             container.style.background = "linear-gradient(180deg, #06aab9, #004811)";
+            printCurrAlbumSongList();
+            highlightCurrSong();
         }
         function setLifesBeenGreat(){
             curr_album = 2;
@@ -141,6 +191,19 @@
             setPlay();
             const container = document.getElementById("container");
             container.style.background = "linear-gradient(180deg, #008c1c, #2900a3)";
+            printCurrAlbumSongList();
+            highlightCurrSong();
+        }
+        function getCurrAlbum(){
+            if(curr_album == 0){
+                return "GROWTH";
+            }
+            else if(curr_album == 1){
+                return "YOUTH";
+            }
+            else if(curr_album == 2){
+                return "LIFE'S BEEN GREAT";
+            }
         }
         function getCurrAlbumSongs(){
             if(curr_album == 0){
@@ -177,7 +240,7 @@
                 curr_song = 0;
                 song.src = getCurrAlbumSongs()[curr_song];
                 setSongInfo();
-                setPlay
+                setPlay();
             }
         }
         function prevSong(){
@@ -205,6 +268,7 @@
         function setPlay(){
             ctrlIcon.classList.remove("fa-play");
             ctrlIcon.classList.add("fa-pause");
+            highlightCurrSong();
         }
         function setPause(){
             ctrlIcon.classList.remove("fa-pause");
@@ -240,6 +304,8 @@
         setGrowth();
         setPause();
         song.pause();
+        printCurrAlbumSongList();
+        highlightCurrSong();
 </script>
 
 </body>
