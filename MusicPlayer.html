@@ -43,10 +43,23 @@
             <div onclick="backHome()" class="circle">
                 <i class="fa-solid fa-angle-left"></i>
             </div>
-            <div onclick="openMenu()" class="circle">
-                <i class="fa-solid fa-bars"></i>
+            <div onclick="toggleDropdown()" class="menu">
+
+                <div>
+                    <i class="fa-solid fa-bars"></i>
+                </div>
             </div>
         </nav>
+
+    <!-- dropdown menu -->
+        <div id="dropdown" class="dropdown">
+            <ul>
+                <span>Albums</span>
+                <li onclick="setGrowth()">GROWTH</li>
+                <li onclick="setYouth()">YOUTH</li>
+                <li onclick="setLifesBeenGreat()">LIFE'S BEEN GREAT</li>
+            </ul>
+        </div>
 
         <img id=currArt src="" class="album-art" alt="">
         
@@ -82,6 +95,8 @@
 
 
 
+
+
 <script>
         let songSlider = document.getElementById("songSlider");
         let song = document.getElementById("song");
@@ -106,6 +121,14 @@
         let curr_song = 0;
         const currArt = document.getElementById('currArt');
 
+        function toggleDropdown(){
+            var element = document.getElementById("dropdown");
+            if (element.style.display === "flex") {
+                element.style.display = "none";
+            } else {
+                element.style.display = "flex";
+            }
+        }
 
         function printCurrAlbumSongList(){
             clearCurrAlbumSongList();

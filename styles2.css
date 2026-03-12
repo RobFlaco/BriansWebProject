@@ -31,6 +31,7 @@ header{
     padding: 0.5rem 1.5rem;
     border-radius: 3px;
     z-index: 1000;
+    
 
 }
 .logo{
@@ -300,18 +301,20 @@ section{
         top: 100%;
         margin-top: 1rem;
         width: 100%;
-        padding: 1rem;
+        padding: 2rem;
         color: white;
         display: flex;
         flex-direction: column;
         text-align: center;
         background: rgba(0, 0, 0, 0.9);
-        border-radius: 3rem;
+        border-radius: 03rem;
         display: none;
+        
+        
     }
     .navbar li{
         margin-top: 1.5rem;
-        padding: 1rem;
+        padding: 2rem;
     }
     .navbar.active{
         display: block;
@@ -324,13 +327,64 @@ section{
         font-size: 1.5rem;
     }
     .about-container img{
-        width: 80vw;
+        width: 60vw;
     }
     .album-card img{
         width: 50vw;
+
     }
     .project-card img{
         width: 50vw;
+
+    }
+    .about .about-container{
+        gap: 1rem;
+    }
+
+    .info-box h3{
+        font-size: 1.5rem;
+        font-weight: 500;
+        }
+    .info-box h1{
+        font-size: 2rem;
+    }
+    .projects h3{
+        font-size: 1.5rem;
+    }
+    .projects h2{
+        font-size: 3rem;
+    }
+    .music h3{
+        font-size: 1.5rem;
+    }
+    .music h2{
+        font-size: 3rem;
+    }
+    .info-box span{
+        font-size: 1rem;
+    }
+    section{
+        padding: 3rem 5%;
+        width: 90%;
+    }
+}
+@media(max-width: 450px){
+    .navbar{
+        transform: translateX(-70px);
+    }
+    .header{
+        left: 0%;
+        transform: translatex(0px);
+    }
+}
+
+@media(max-width: 400px){
+    .navbar{
+        transform: translateX(-70px);
+    }
+    .header{
+        left: 0%;
+        transform: translatex(-30px);
     }
 }
 
