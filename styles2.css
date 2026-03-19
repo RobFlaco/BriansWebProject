@@ -9,6 +9,7 @@
     list-style: none;
 
 
+
 }
 
 a:link, a:visited, a:hover, a:active {
@@ -86,6 +87,7 @@ li a:hover::before{
 }
 #menu-icon{
     font-size: 2rem;
+    gap: 30%;
     display: none;
 }
 
@@ -96,6 +98,7 @@ section{
     padding: 5rem 5%;
     width: 90%;
     position: relative;
+
 }
 .about{
     display: flex;
@@ -139,7 +142,7 @@ section{
     display: flex;
     gap: 1rem;
 }
-.btn{
+.btn, .contact button{
     border-radius: 3rem;
     padding: 0.5rem 1.5rem;
     border: 2px solid black;
@@ -148,7 +151,7 @@ section{
     text-wrap: nowrap;
     transition: 0.2s ease-in-out;
 }
-.btn:hover{
+.btn:hover, .contact button:hover{
     background-color: black;
     color: white;
 }
@@ -163,6 +166,24 @@ section{
 }
 .socials i:hover{
     transform: scale(1.1);
+}
+
+
+.contact{
+    padding-top: 7rem;
+}
+.contact form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.contact input, .contact textarea{
+    width: 30vw;
+    padding: 1rem;
+    font-size: 20px;
+    border-radius: 3px;
+    border: 2px solid black;
+
 }
 
 
@@ -294,21 +315,29 @@ section{
 }
 @media(max-width: 600px){
     header #menu-icon{
-        display: block;
+        display: inline-block;
+        
+    }
+    header{
+        padding: 1rem 5rem;
+        gap: 55vw;
+        width: 200vw;
+        transform: translateX(-38.5%);
+
     }
     .navbar{
         position: absolute;
         top: 100%;
-        margin-top: 1rem;
-        width: 100%;
+        margin-top: .5rem;
+        width: 150vw;
         padding: 2rem;
         color: white;
         display: flex;
         flex-direction: column;
         text-align: center;
         background: rgba(0, 0, 0, 0.9);
-        border-radius: 03rem;
         display: none;
+        transform: translateX(-16%);
         
         
     }
@@ -317,12 +346,13 @@ section{
         padding: 2rem;
     }
     .navbar.active{
-        display: block;
+        display: flex;
     }
-    header{
-        padding: 1rem 5rem;
-        gap: 8rem;
+
+    .navbar {
+        transform: translateX();
     }
+    
     header .logo{
         font-size: 1.5rem;
     }
@@ -367,24 +397,29 @@ section{
         padding: 3rem 5%;
         width: 90%;
     }
+    .contact input, .contact textarea{
+    width: 50vw;
+    font-size: 15px;
+    border-radius: 3px;
+    border: 2px solid black;
+    }
 }
 @media(max-width: 450px){
-    .navbar{
-        transform: translateX(-70px);
+    header{
+        gap: 45vw;
+        transform: translateX(-41%);
     }
-    .header{
-        left: 0%;
-        transform: translatex(0px);
+    .navbar{
+        transform: translateX(-12.5%);
     }
 }
-
-@media(max-width: 400px){
-    .navbar{
-        transform: translateX(-70px);
+@media(max-width: 350px){
+    header{
+        gap: 40vw;
+        transform: translateX(-41%);
     }
-    .header{
-        left: 0%;
-        transform: translatex(-30px);
+    .navbar{
+        transform: translateX(-12.5%);
     }
 }
 
