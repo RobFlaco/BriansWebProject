@@ -155,6 +155,8 @@
             for(let i = 0; i < songItems.length; i++){
                 if(i == curr_song){
                     songItems[i].style.transform = "scale(1.2)";
+                    songItems[i].textContent = songItems[i].textContent.replace("- ", "");
+                    songItems[i].textContent = songItems[i].textContent.replace(" -", "");
                     songItems[i].prepend(document.createTextNode("- "));
                     songItems[i].appendChild(document.createTextNode(" -"));
                 }
