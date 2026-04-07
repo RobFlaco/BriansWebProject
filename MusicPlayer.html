@@ -2,335 +2,411 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatable" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
     <link rel="stylesheet" href="StylesMusic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+        /* Galaxy canvas overlay */
+        #galaxyCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* Lift all UI above the canvas */
+        #container {
+            position: relative;
+            z-index: 1;
+        }
+        /* Audio Visualizer */
+        #visualizerCanvas {
+            display: block;
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin: 10px 0 0 0;
+            opacity: 0.85;
+        }
+    </style>
 </head>
 <body>
 
-
+    <canvas id="galaxyCanvas"></canvas>
 
     <div id="container" class="container">
 
         <div class="leftContainer">
-        <!-- Album List -->
             <div id="albumList" class="album-list">
                 <H2>Albums</H2>
-                <div>
-                    <img onclick="setGrowth()" src="img/GROWTH.JPEG" class="albumSelector" alt="">
-                    <ul> <h1>GROWTH</h1> <p>by Rob Flaco</p> </ul>
-                </div>
-                <div>
-                    <img onclick="setYouth()" src="img/YOUTH.jpeg" class="albumSelector" alt="">
-                    <ul><h1>YOUTH</h1><p>by Rob Flaco</p></ul>
-                </div>
-                <div>
-                    <img onclick="setLifesBeenGreat()" src="img/LIFES-BEEN-GREAT.jpeg" class="albumSelector" alt="">
-                    <ul><h1>LIFE'S BEEN GREAT</h1><p>by Rob Flaco & JDS</p></ul>
-                </div>
+                <!-- Populated from content.json -->
             </div>
-
-
         </div>
-
-        <!-- Music Player -->
 
         <div class="music-player">
-            <!-- Music Player Top Controls -->
-        <nav>
-            <div onclick="backHome()" class="circle">
-                <i class="fa-solid fa-angle-left"></i>
-            </div>
-            <div onclick="toggleDropdown()" class="menu">
-
-                <div>
-                    <i class="fa-solid fa-bars"></i>
+            <nav>
+                <div onclick="backHome()" class="circle">
+                    <i class="fa-solid fa-angle-left"></i>
                 </div>
+                <div onclick="toggleDropdown()" class="menu">
+                    <div><i class="fa-solid fa-bars"></i></div>
+                </div>
+            </nav>
+
+            <div id="dropdown" class="dropdown">
+                <ul>
+                    <span>Albums</span>
+                    <!-- Populated from content.json -->
+                </ul>
             </div>
-        </nav>
 
-    <!-- dropdown menu -->
-        <div id="dropdown" class="dropdown">
-            <ul>
-                <span>Albums</span>
-                <li onclick="setGrowth()">GROWTH</li>
-                <li onclick="setYouth()">YOUTH</li>
-                <li onclick="setLifesBeenGreat()">LIFE'S BEEN GREAT</li>
-            </ul>
+            <img id="currArt" src="" class="album-art" alt="">
+
+            <h1 id="songName">Song-Name</h1>
+            <p id="songArtist">Rob Flaco</p>
+
+            <audio id="song" autoplay="false">
+                <source src="" type="audio/wav">
+            </audio>
+
+            <!-- Visualizer canvas sits between song info and slider -->
+            <canvas id="visualizerCanvas" width="400" height="60"></canvas>
+
+            <input type="range" value="0" id="songSlider">
+
+            <div class="controls">
+                <div onclick="prevSong()"><i class="fa-solid fa-backward"></i></div>
+                <div onclick="playPause()"><i class="fa-solid fa-pause" id="ctrlIcon"></i></div>
+                <div onclick="nextSong()"><i class="fa-solid fa-forward"></i></div>
+            </div>
         </div>
 
-        <img id=currArt src="" class="album-art" alt="">
-        
-        <h1 id="songName">Song-Name</h1>
-        <p id="songArtist">Rob Flaco</p>
-
-        <audio id="song" autoplay="false">
-            <source src="audio/GROWTH/1PassTheMic.wav" type="audio/wav">
-        </audio>
-        <input type="range" value="0" id="songSlider">
-
-        <div class="controls">
-            <div onclick="prevSong()"><i class="fa-solid fa-backward"></i></div>
-            <div onclick="playPause()"><i class="fa-solid fa-pause" id="ctrlIcon"></i></div>
-            <div onclick="nextSong()"><i class="fa-solid fa-forward"></i></div>
-        </div>
-        </div>
-
-        <!-- Song Names -->
-        
         <div class="rightContainer">
-        
             <div class="song-list">
-                <img id=listArt src="" class="albumSelector" alt="">
+                <img id="listArt" src="" class="albumSelector" alt="">
                 <ul id="songList"></ul>
             </div>
-
-
         </div>
     </div>
 
-
-
-
-
-
-
 <script>
-        let songSlider = document.getElementById("songSlider");
-        let song = document.getElementById("song");
-        let ctrlIcon = document.getElementById("ctrlIcon");
+    /* ─── State ─────────────────────────────────────── */
+    let content = null;       // loaded from content.json
+    let curr_album = 0;
+    let curr_song  = 0;
 
-        const album = ['img/GROWTH.JPEG', 'img/YOUTH.jpeg', 'img/LIFES-BEEN-GREAT.jpeg'];
-        const album_artists = ['Rob Flaco', 'Rob Flaco', 'Rob Flaco & JDS'];
-        const growth_songs = ['audio/GROWTH/1PassTheMic.wav', 'audio/GROWTH/2Dreamin.wav', 
-            'audio/GROWTH/3Lungs.wav', 'audio/GROWTH/4Pressure.wav', 'audio/GROWTH/5over.wav'];
-        const growth_song_names = ['Pass The Mic', 'Dreamin', 'Lungs', 'Pressure', 'Over'];
+    const songEl    = document.getElementById('song');
+    const songSlider = document.getElementById('songSlider');
+    const ctrlIcon  = document.getElementById('ctrlIcon');
+    const currArt   = document.getElementById('currArt');
+    const listArt   = document.getElementById('listArt');
 
-        const youth_songs = ['audio/YOUTH/1ThatKid.wav', 'audio/YOUTH/2SmokeBigDope.wav', 'audio/YOUTH/3Slide.wav', 'audio/YOUTH/4VibeWithMe.wav', 
-        'audio/YOUTH/5Blasphemy.wav', 'audio/YOUTH/6LayMeDown.wav', 'audio/YOUTH/7FloridaShit.wav', 'audio/YOUTH/8Cold.wav', 'audio/YOUTH/9Leave.wav'];
-        const youth_song_names = ['That Kid', 'Smoke Big Dope', 'Slide', 'Vibe Wit Me', 'Blasphemy',
-        'Lay Me Down', 'Florida Shit', 'Cold', 'Leave'];
+    /* ─── Load content.json ─────────────────────────── */
+    async function loadContent() {
+        try {
+            const res  = await fetch('content.json');
+            content    = await res.json();
+            buildUI();
+            setAlbum(0);
+            setPause();
+            songEl.pause();
+        } catch(e) {
+            console.error('Could not load content.json:', e);
+        }
+    }
 
-        const lifesBeenGreat_songs = ['audio/LifesBeenGreat/1Energy.wav', 'audio/LifesBeenGreat/2NoDrama.wav', 'audio/LifesBeenGreat/3Jazz.wav', 
-        'audio/LifesBeenGreat/4RightNow.wav', 'audio/LifesBeenGreat/5LifesBeenGreat.wav'];
-        const lifesBeenGreat_song_names = ['Energy', 'No Drama', 'Jazz', 'Right Now', 'Life\'s Been Great'];
+    /* ─── Build sidebar + dropdown from JSON ────────── */
+    function buildUI() {
+        // Left sidebar album list
+        const albumList = document.getElementById('albumList');
+        albumList.innerHTML = '<H2>Albums</H2>';
+        content.albums.forEach((a, i) => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <img onclick="setAlbum(${i})" src="${a.image}" class="albumSelector" alt="">
+                <ul><h1>${a.title}</h1><p>by ${a.artist}</p></ul>
+            `;
+            albumList.appendChild(div);
+        });
 
-        let curr_album = 0;
-        let curr_song = 0;
-        const currArt = document.getElementById('currArt');
+        // Dropdown menu
+        const dropdownUL = document.querySelector('#dropdown ul');
+        dropdownUL.innerHTML = '<span>Albums</span>';
+        content.albums.forEach((a, i) => {
+            const li = document.createElement('li');
+            li.textContent = a.title;
+            li.onclick = () => setAlbum(i);
+            dropdownUL.appendChild(li);
+        });
+    }
 
-        function toggleDropdown(){
-            var element = document.getElementById("dropdown");
-            if (element.style.display === "flex") {
-                element.style.display = "none";
-            } else {
-                element.style.display = "flex";
-            }
-        }
+    /* ─── Album switching ───────────────────────────── */
+    function setAlbum(index) {
+        curr_album = index;
+        curr_song  = 0;
+        const a = content.albums[curr_album];
 
-        function printCurrAlbumSongList(){
-            clearCurrAlbumSongList();
-            const songList = document.getElementById("songList");
-            songList.innerHTML = "<h1>" + getCurrAlbum() + "</h1>";
-            const songNames = getCurrAlbumSongNames();
-            for(let i = 0; i < songNames.length; i++){
-                const li = document.createElement("h2");
-                li.innerHTML = songNames[i];
-                li.setAttribute("data-song-index", i);
-                li.addEventListener("click", function(){
-                    curr_song = parseInt(this.getAttribute("data-song-index"));
-                    song.src = getCurrAlbumSongs()[curr_song];
-                    setSongInfo();
-                    setPlay();
-                });
-                const songIsActive = (i == curr_song);
-                songList.appendChild(li);
-            }
-        }
-        function highlightCurrSong(){
-            const songList = document.getElementById("songList");
-            const songItems = songList.getElementsByTagName("h2");
-            for(let i = 0; i < songItems.length; i++){
-                if(i == curr_song){
-                    songItems[i].style.transform = "scale(1.2)";
-                    songItems[i].textContent = songItems[i].textContent.replace("- ", "");
-                    songItems[i].textContent = songItems[i].textContent.replace(" -", "");
-                    songItems[i].prepend(document.createTextNode("- "));
-                    songItems[i].appendChild(document.createTextNode(" -"));
-                }
-                else{
-                    songItems[i].style.transform = "scale(1)";
-                    if(songItems[i].textContent.startsWith("- ")){
-                        songItems[i].textContent = songItems[i].textContent.replace("- ", "");
-                        songItems[i].textContent = songItems[i].textContent.replace(" -", "");
-                    }
-                }
-            }
-        }
+        currArt.src = a.image;
+        listArt.src = a.image;
+        songEl.src  = a.tracks[0].file;
 
+        document.body.style.background =
+            `linear-gradient(180deg, ${a.gradientStart}, ${a.gradientEnd})`;
 
-        function clearCurrAlbumSongList(){
-            const songList = document.getElementById("songList");
-            songList.innerHTML = "";
-        }
+        // Update visualizer color to match album
+        vizColor = a.gradientStart;
 
-        function setSongInfo(){
-                document.getElementById("songName").innerHTML = getCurrAlbumSongNames()[curr_song];
-                document.getElementById("songArtist").innerHTML = album_artists[curr_album];
-        }
-        function setGrowth(){
-            curr_album = 0;
-            currArt.src = album[curr_album];
-            listArt.src = album[curr_album];
-            curr_song = 0;
-            song.src = growth_songs[curr_song];
-            setSongInfo();
-            setPlay();
-            const container = document.getElementById("container");
-            container.style.background = "linear-gradient(180deg, #a60202, #170000)";
-            printCurrAlbumSongList();
-            highlightCurrSong();
-        }
-        function setYouth(){
-            curr_album = 1;
-            currArt.src = album[curr_album];
-            listArt.src = album[curr_album];
-            curr_song = 0;
-            song.src = youth_songs[curr_song];
-            setSongInfo();
-            setPlay();
-            const container = document.getElementById("container");
-            container.style.background = "linear-gradient(180deg, #06aab9, #004811)";
-            printCurrAlbumSongList();
-            highlightCurrSong();
-        }
-        function setLifesBeenGreat(){
-            curr_album = 2;
-            currArt.src = album[curr_album];
-            listArt.src = album[curr_album];
-            curr_song = 0;
-            song.src = lifesBeenGreat_songs[curr_song];
-            setSongInfo();
-            setPlay();
-            const container = document.getElementById("container");
-            container.style.background = "linear-gradient(180deg, #008c1c, #2900a3)";
-            printCurrAlbumSongList();
-            highlightCurrSong();
-        }
-        function getCurrAlbum(){
-            if(curr_album == 0){
-                return "GROWTH";
-            }
-            else if(curr_album == 1){
-                return "YOUTH";
-            }
-            else if(curr_album == 2){
-                return "LIFE'S BEEN GREAT";
-            }
-        }
-        function getCurrAlbumSongs(){
-            if(curr_album == 0){
-                return growth_songs;
-            }
-            else if(curr_album == 1){
-                return youth_songs;
-            }
-            else if(curr_album == 2){
-                return lifesBeenGreat_songs;
-            }
-        }
-        function getCurrAlbumSongNames(){
-            if(curr_album == 0){
-                return growth_song_names;
-            }
-            else if(curr_album == 1){
-                return youth_song_names;
-            }
-            else if(curr_album == 2){
-                return lifesBeenGreat_song_names;
-            }
-        }
-
-        function nextSong(){
-            if(curr_song < getCurrAlbumSongs().length - 1){
-                curr_song++;
-                song.src = getCurrAlbumSongs()[curr_song];
-                setSongInfo();
-                setPlay();
-
-            }
-            else {
-                curr_song = 0;
-                song.src = getCurrAlbumSongs()[curr_song];
-                setSongInfo();
-                setPlay();
-            }
-        }
-        function prevSong(){
-            if(curr_song > 0){
-                curr_song--;
-                song.src = getCurrAlbumSongs()[curr_song];
-                setSongInfo();
-                setPlay();
-            }
-            else {
-                curr_song = getCurrAlbumSongs().length - 1;
-                song.src = getCurrAlbumSongs()[curr_song];
-                setSongInfo();
-                setPlay();
-            }
-        }
-
-
-
-
-        song.onloadmetadata = function(){
-            songSlider.max = song.duration;
-            songSlider.value = song.currentTime;
-        }
-        function setPlay(){
-            ctrlIcon.classList.remove("fa-play");
-            ctrlIcon.classList.add("fa-pause");
-            highlightCurrSong();
-        }
-        function setPause(){
-            ctrlIcon.classList.remove("fa-pause");
-            ctrlIcon.classList.add("fa-play");
-        }
-        function playPause(){
-            if(ctrlIcon.classList.contains("fa-pause")){
-                song.pause();
-                setPause();
-            } 
-            else {
-                song.play();
-                setPlay();
-            }
-        }
-        if(song.play()){
-            setInterval(()=>{
-                songSlider.value = song.currentTime;
-            },500);
-        }
-
-        songSlider.onchange = function(){
-            song.currentTime = songSlider.value;
-            song.play();
-            setPlay();
-        }
-        function backHome(){
-            window.location.href = "index.html";
-        }
-
-
-
-        setGrowth();
-        setPause();
-        song.pause();
+        setSongInfo();
+        setPlay();
         printCurrAlbumSongList();
         highlightCurrSong();
+
+        // Close dropdown if open
+        document.getElementById('dropdown').style.display = 'none';
+    }
+
+    /* ─── Song info ─────────────────────────────────── */
+    function setSongInfo() {
+        const a = content.albums[curr_album];
+        document.getElementById('songName').textContent   = a.tracks[curr_song].title;
+        document.getElementById('songArtist').textContent = a.artist;
+    }
+
+    /* ─── Track list ────────────────────────────────── */
+    function printCurrAlbumSongList() {
+        const songList = document.getElementById('songList');
+        const a = content.albums[curr_album];
+        songList.innerHTML = `<h1>${a.title}</h1>`;
+        a.tracks.forEach((track, i) => {
+            const h2 = document.createElement('h2');
+            h2.textContent = track.title;
+            h2.dataset.songIndex = i;
+            h2.addEventListener('click', function() {
+                curr_song = parseInt(this.dataset.songIndex);
+                songEl.src = a.tracks[curr_song].file;
+                setSongInfo();
+                setPlay();
+                highlightCurrSong();
+            });
+            songList.appendChild(h2);
+        });
+    }
+
+    function highlightCurrSong() {
+        const items = document.getElementById('songList').getElementsByTagName('h2');
+        Array.from(items).forEach((el, i) => {
+            el.style.transform = i === curr_song ? 'scale(1.2)' : 'scale(1)';
+            // strip old dashes then re-add for active
+            el.textContent = el.textContent.replace(/^- | -$/g, '');
+            if(i === curr_song) {
+                el.prepend(document.createTextNode('- '));
+                el.append(document.createTextNode(' -'));
+            }
+        });
+    }
+
+    /* ─── Playback controls ─────────────────────────── */
+    function setPlay() {
+        ctrlIcon.classList.replace('fa-play','fa-pause') || ctrlIcon.classList.add('fa-pause');
+        highlightCurrSong();
+    }
+    function setPause() {
+        ctrlIcon.classList.replace('fa-pause','fa-play') || ctrlIcon.classList.add('fa-play');
+    }
+    function playPause() {
+        if(ctrlIcon.classList.contains('fa-pause')) { songEl.pause(); setPause(); }
+        else { songEl.play(); setPlay(); }
+    }
+
+    function nextSong() {
+        const tracks = content.albums[curr_album].tracks;
+        curr_song = (curr_song + 1) % tracks.length;
+        songEl.src = tracks[curr_song].file;
+        setSongInfo(); setPlay();
+    }
+    function prevSong() {
+        const tracks = content.albums[curr_album].tracks;
+        curr_song = (curr_song - 1 + tracks.length) % tracks.length;
+        songEl.src = tracks[curr_song].file;
+        setSongInfo(); setPlay();
+    }
+
+    /* ─── Progress slider ───────────────────────────── */
+    songEl.onloadedmetadata = function() {
+        songSlider.max   = Math.floor(songEl.duration);
+        songSlider.value = 0;
+    };
+    setInterval(() => { if(!songEl.paused) songSlider.value = songEl.currentTime; }, 500);
+    songSlider.onchange = function() {
+        songEl.currentTime = this.value;
+        songEl.play();
+        setPlay();
+    };
+
+    /* ─── Dropdown ──────────────────────────────────── */
+    function toggleDropdown() {
+        const el = document.getElementById('dropdown');
+        el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function backHome() { window.location.href = 'index.html'; }
+
+    /* ─────────────────────────────────────────────────
+       AUDIO VISUALIZER
+       Uses Web Audio API AnalyserNode → Canvas bars
+    ───────────────────────────────────────────────── */
+    let audioCtx = null;
+    let analyser  = null;
+    let source    = null;
+    let vizColor  = '#a60202';
+    let vizRunning = false;
+
+    function initVisualizer() {
+        if(audioCtx) return;  // already set up
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser  = audioCtx.createAnalyser();
+        analyser.fftSize = 128;          // 64 frequency bins — clean bar count
+        analyser.smoothingTimeConstant = 0.8;
+
+        source = audioCtx.createMediaElementSource(songEl);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+    }
+
+    function drawVisualizer() {
+        if(!analyser) return;
+        const canvas = document.getElementById('visualizerCanvas');
+        const ctx    = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray    = new Uint8Array(bufferLength);
+
+        function frame() {
+            requestAnimationFrame(frame);
+            analyser.getByteFrequencyData(dataArray);
+
+            ctx.clearRect(0, 0, W, H);
+
+            const barWidth  = Math.floor(W / bufferLength) - 1;
+            let x = 0;
+
+            for(let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArray[i] / 255) * H;
+                // Gradient per bar from album color → lighter
+                const grad = ctx.createLinearGradient(x, H - barHeight, x, H);
+                grad.addColorStop(0, lighten(vizColor, 60));
+                grad.addColorStop(1, vizColor);
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.roundRect(x, H - barHeight, barWidth, barHeight, [3,3,0,0]);
+                ctx.fill();
+                x += barWidth + 1;
+            }
+        }
+        frame();
+    }
+
+    // Simple color lightener for gradient top
+    function lighten(hex, amount) {
+        const num = parseInt(hex.replace('#',''), 16);
+        const r = Math.min(255, (num >> 16) + amount);
+        const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+        const b = Math.min(255, (num & 0xff) + amount);
+        return `rgb(${r},${g},${b})`;
+    }
+
+    // Hook into play events to init + start visualizer
+    songEl.addEventListener('play', () => {
+        initVisualizer();
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        drawVisualizer();
+    });
+
+    /* ─── Boot ──────────────────────────────────────── */
+    loadContent();
+
+    /* ─────────────────────────────────────────────────
+       GALAXY CANVAS — transparent bg so album gradient
+       shows through, stars + nebula float on top
+    ───────────────────────────────────────────────── */
+    (function() {
+        const canvas = document.getElementById('galaxyCanvas');
+        const ctx    = canvas.getContext('2d');
+        let W, H, stars = [], nebula = [];
+
+        function resize() {
+            W = canvas.width  = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+
+        function initStars() {
+            stars = [];
+            for(let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    r: Math.random() * 1.5 + 0.3,
+                    speed: Math.random() * 0.3 + 0.05,
+                    twinkle: Math.random() * Math.PI * 2,
+                    twinkleSpeed: Math.random() * 0.02 + 0.005
+                });
+            }
+            nebula = [];
+            const colors = ['rgba(255,255,255,', 'rgba(200,200,255,', 'rgba(255,200,200,'];
+            for(let i = 0; i < 4; i++) {
+                nebula.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    r: Math.random() * 100 + 50,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    drift: { x: (Math.random() - 0.5) * 0.1, y: (Math.random() - 0.5) * 0.1 }
+                });
+            }
+        }
+
+        function drawFrame() {
+            // Clear to fully transparent — album gradient shows through underneath
+            ctx.clearRect(0, 0, W, H);
+
+            // Soft nebula clouds
+            nebula.forEach(n => {
+                n.x += n.drift.x;
+                n.y += n.drift.y;
+                const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+                g.addColorStop(0, n.color + '0.08)');
+                g.addColorStop(1, n.color + '0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Twinkling drifting stars
+            stars.forEach(s => {
+                s.twinkle += s.twinkleSpeed;
+                s.y += s.speed;
+                if(s.y > H) { s.y = 0; s.x = Math.random() * W; }
+                const alpha = 0.4 + 0.6 * Math.sin(s.twinkle);
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(drawFrame);
+        }
+
+        resize();
+        initStars();
+        drawFrame();
+        window.addEventListener('resize', () => { resize(); initStars(); });
+    })();
 </script>
 
 </body>
+</html>

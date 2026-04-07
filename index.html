@@ -3,170 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My First JS Website</title>
+    <title>Brian Robles</title>
     <link rel="stylesheet" href="styles2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 <body>
+    <canvas id="galaxyCanvas"></canvas>
+
     <header class="header">
         <a href="#" class="logo"><span>Brian Robles</span></a>
-
         <ul class="navbar">
-            <li>
-                <a href="#about">About</a>
-            </li>
-            <li>
-                <a href="#projects">Projects</a>
-            </li>
-            <li>
-                <a href="#music">Music</a>
-            </li>
-            <li>
-                <a href="#contact">Contact</a>
-            </li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#music">Music</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
         <i class="fa-solid fa-bars" id="menu-icon"></i>
-
         <a href="https://github.com/RobFlaco" target="_blank"><button class="visit-btn">Visit Github</button></a>
     </header>
 
+    <!-- About section — bio filled from content.json -->
     <section id="about" class="about">
         <div class="about-container">
-            <img src="img/TrashBallCrop.JPEG" alt="">
-
+            <img id="bio-img" src="" alt="">
             <div class="info-box">
-
                 <div class="text">
-                    <h3>Hello, I'm</h3>
-                    <h1>Brian Robles</h1>
-                    <span>Musical Artist &</span><br>
-                    <span>Computer Science Student</span>
+                    <h3 id="bio-greeting"></h3>
+                    <h1 id="bio-name"></h1>
+                    <span id="bio-tagline1"></span><br>
+                    <span id="bio-tagline2"></span>
                 </div>
-
                 <div class="btn-group">
-                    <a href="Brian_Robles_Frontend_Resume.pdf" download=""><button class="btn">Download CV</button></a>
+                    <a id="bio-resume-link" href="" download><button class="btn">Download CV</button></a>
                     <a href="#contact"><button class="btn">Contact Me</button></a>
                 </div>
-
                 <div class="socials">
-                    <a href="https://github.com/RobFlaco" target="_blank"><i class="fa-brands fa-github"></i></a>
-                    <a href="https://www.linkedin.com/in/brian-robles-45116032a" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                    <a id="bio-github-link" href="" target="_blank"><i class="fa-brands fa-github"></i></a>
+                    <a id="bio-linkedin-link" href="" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
                 </div>
-
             </div>
         </div>
     </section>
 
+    <!-- Projects section — filled from content.json -->
     <section id="projects" class="projects">
         <h2 class="section-title">Projects</h2>
-            
-        <a href="MusicPlayer.html">
-            <div class="project-card">
-                <img src="img/Project1.jpg" alt="">
-                <h3>Music Player</h3>
-                <p>This is one of my first projects in web development. It is a fully functional music player built with HTML, CSS, and JavaScript.
-                    It features three albums, each in various lengths, with the ability to play, pause, skip forward, and skip backward. It also features 
-                    an interactive progress bar that updates as the song plays, backround color that updates based on the album, and a responsive design 
-                    that looks good on both desktop and mobile devices.
-                </p>
-                <div class="btn-group">
-                    <a href="https://github.com/RobFlaco/BriansWebProject"  target="_blank" class="btn">
-                        Github Repo
-                    </a>
-                    <a href="MusicPlayer.html" class="btn">
-                        Music Player
-                    </a>
-                </div>
-            </div>
-        </a>
-
-
+        <div id="projects-grid"></div>
     </section>
 
+    <!-- Music section — filled from content.json -->
     <section id="music" class="music">
         <h2 class="section-title">Music Albums</h2>
-
-        <div class="music-grid">
-            <div class="album-card">
-                <img src="img/GROWTH.JPEG" alt="">
-                <h3>GROWTH</h3>
-                <p>This album was created during a pivotal period of personal growth, as I began to recognize and address habits that were holding me back. 
-                    It reflects my commitment to making positive changes, including embracing a healthier lifestyle and focusing on building a more stable 
-                    and purposeful future.
-                </p>
-                <div class="btn-group">
-                    <a href="https://open.spotify.com/album/0Tx88XIprcMiJa9O2dHqT8?si=boeE7LG8Ri6BbspjG66BEQ" target="_blank" class="btn">
-                        Spotify
-                    </a>
-                    <a href="https://music.apple.com/us/album/growth-ep/1720055660"  target="_blank" class="btn">
-                        Apple Music
-                    </a>
-                </div>
-            </div>
-
-            <div class="album-card">
-                <img src="img/YOUTH.jpeg" alt="">
-                <h3>Youth</h3>
-                <p>This album was written earlier in my life and captures a more carefree and unstructured phase of my personal journey. While my perspective 
-                    has evolved since then, these experiences played an important role in shaping my growth, creativity, and the person I am today.
-                </p>
-                <div class="btn-group">
-                    <a href="https://open.spotify.com/album/4PCpXogFQ1jG6fT8DamxdP?si=O6yAAeF1S-Ks404ntiiArw"  target="_blank" class="btn">
-                        Spotify
-                    </a>
-                    <a href="https://music.apple.com/us/album/youth/1739504538"  target="_blank" class="btn">
-                        Apple Music
-                    </a>
-                </div>
-            </div>
-
-            <div class="album-card">
-                <img src="img/LIFES-BEEN-GREAT.jpeg" alt="">
-                <h3>Lifes Been Great</h3>
-                <p>This album is a collaboration with my friend and producer JDS, a lifelong musician with a strong background in guitar and vocal performance. 
-                    JDS was responsible for producing and mixing each track, bringing a cohesive and polished sound to the project.
-                </p>
-                <div class="btn-group">
-                    <a href="https://open.spotify.com/album/0ncfyKyE4vZOLrbSxAfub7?si=iwgpQhUNQvOSLdh6Y7nD0w"  target="_blank" class="btn">
-                        Spotify
-                    </a>
-                    <a href="https://music.apple.com/us/album/lifes-been-great-ep/1633347160"  target="_blank" class="btn">
-                        Apple Music
-                    </a>
-                </div>
-            </div>
-        </div>
-
-
-
+        <div class="music-grid" id="albums-grid"></div>
     </section>
 
     <section id="contact" class="contact">
         <h2 class="section-title">Contact Me</h2>
         <form action="https://formsubmit.co/1b28fe0b6562207432b2db7ec2402ffb" method="POST">
-            <!--honeypot--> 
             <input type="text" name="_honey" style="display:none">
-            <!--disable captcha-->
             <input type="hidden" name="_captcha" value="false">
-
             <table>
-                <tr>
-                    <td><input placeholder="enter name" type="text" id="name" name="name" required></td>
-                </tr>
-                <tr>
-                    <td><input placeholder="enter email" type="email" id="email" name="email" required></td>
-                </tr>
-                <tr>
-                    <td><textarea placeholder="Type your message." id="message" name="message" rows="5" required></textarea></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><button type="submit">Send Message</button></td>
-                </tr>
+                <tr><td><input placeholder="enter name" type="text" id="name" name="name" required></td></tr>
+                <tr><td><input placeholder="enter email" type="email" id="email" name="email" required></td></tr>
+                <tr><td><textarea placeholder="Type your message." id="message" name="message" rows="5" required></textarea></td></tr>
+                <tr><td colspan="2"><button type="submit">Send Message</button></td></tr>
             </table>
         </form>
     </section>
 
-
     <script src="script.js"></script>
+    <script>
+        async function loadContent() {
+            try {
+                const res     = await fetch('content.json');
+                const content = await res.json();
+                renderBio(content.bio);
+                renderProjects(content.projects);
+                renderAlbums(content.albums);
+            } catch(e) {
+                console.error('Could not load content.json:', e);
+            }
+        }
+
+        function renderBio(bio) {
+            document.getElementById('bio-img').src            = bio.profileImage;
+            document.getElementById('bio-greeting').textContent = bio.greeting;
+            document.getElementById('bio-name').textContent    = bio.name;
+            document.getElementById('bio-tagline1').textContent = bio.tagline1;
+            document.getElementById('bio-tagline2').textContent = bio.tagline2;
+            document.getElementById('bio-resume-link').href    = bio.resumePDF;
+            document.getElementById('bio-github-link').href    = bio.github;
+            document.getElementById('bio-linkedin-link').href  = bio.linkedin;
+        }
+
+        function renderProjects(projects) {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = projects.map(p => `
+                <a href="${p.link}">
+                    <div class="project-card">
+                        <img src="${p.image}" alt="">
+                        <h3>${p.title}</h3>
+                        <p>${p.description}</p>
+                        <div class="btn-group">
+                            <a href="${p.github}" target="_blank" class="btn">Github Repo</a>
+                            <a href="${p.link}" class="btn">${p.title}</a>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function renderAlbums(albums) {
+            const grid = document.getElementById('albums-grid');
+            grid.innerHTML = albums.map(a => `
+                <div class="album-card">
+                    <img src="${a.image}" alt="">
+                    <h3>${a.title}</h3>
+                    <p>${a.description}</p>
+                    <div class="btn-group">
+                        <a href="${a.spotify}" target="_blank" class="btn">Spotify</a>
+                        <a href="${a.appleMusic}" target="_blank" class="btn">Apple Music</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        loadContent();
+    </script>
 </body>
 </html>

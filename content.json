@@ -1,0 +1,83 @@
+{
+  "bio": {
+    "name": "Brian Robles",
+    "tagline1": "Musical Artist &",
+    "tagline2": "Computer Science Student",
+    "greeting": "Hello, I'm",
+    "profileImage": "img/TrashBallCrop.JPEG",
+    "github": "https://github.com/RobFlaco",
+    "linkedin": "https://www.linkedin.com/in/brian-robles-45116032a",
+    "resumePDF": "Brian_Robles_Frontend_Resume.pdf"
+  },
+  "albums": [
+    {
+      "id": "growth",
+      "title": "GROWTH",
+      "artist": "Rob Flaco",
+      "image": "img/GROWTH.JPEG",
+      "gradientStart": "#a60202",
+      "gradientEnd": "#170000",
+      "description": "This album was created during a pivotal period of personal growth, as I began to recognize and address habits that were holding me back. It reflects my commitment to making positive changes, including embracing a healthier lifestyle and focusing on building a more stable and purposeful future.",
+      "spotify": "https://open.spotify.com/album/0Tx88XIprcMiJa9O2dHqT8?si=boeE7LG8Ri6BbspjG66BEQ",
+      "appleMusic": "https://music.apple.com/us/album/growth-ep/1720055660",
+      "tracks": [
+        { "title": "Pass The Mic", "file": "audio/GROWTH/1PassTheMic.wav" },
+        { "title": "Dreamin", "file": "audio/GROWTH/2Dreamin.wav" },
+        { "title": "Lungs", "file": "audio/GROWTH/3Lungs.wav" },
+        { "title": "Pressure", "file": "audio/GROWTH/4Pressure.wav" },
+        { "title": "Over", "file": "audio/GROWTH/5over.wav" }
+      ]
+    },
+    {
+      "id": "youth",
+      "title": "YOUTH",
+      "artist": "Rob Flaco",
+      "image": "img/YOUTH.jpeg",
+      "gradientStart": "#06aab9",
+      "gradientEnd": "#004811",
+      "description": "This album was written earlier in my life and captures a more carefree and unstructured phase of my personal journey. While my perspective has evolved since then, these experiences played an important role in shaping my growth, creativity, and the person I am today.",
+      "spotify": "https://open.spotify.com/album/4PCpXogFQ1jG6fT8DamxdP?si=O6yAAeF1S-Ks404ntiiArw",
+      "appleMusic": "https://music.apple.com/us/album/youth/1739504538",
+      "tracks": [
+        { "title": "That Kid", "file": "audio/YOUTH/1ThatKid.wav" },
+        { "title": "Smoke Big Dope", "file": "audio/YOUTH/2SmokeBigDope.wav" },
+        { "title": "Slide", "file": "audio/YOUTH/3Slide.wav" },
+        { "title": "Vibe Wit Me", "file": "audio/YOUTH/4VibeWithMe.wav" },
+        { "title": "Blasphemy", "file": "audio/YOUTH/5Blasphemy.wav" },
+        { "title": "Lay Me Down", "file": "audio/YOUTH/6LayMeDown.wav" },
+        { "title": "Florida Shit", "file": "audio/YOUTH/7FloridaShit.wav" },
+        { "title": "Cold", "file": "audio/YOUTH/8Cold.wav" },
+        { "title": "Leave", "file": "audio/YOUTH/9Leave.wav" }
+      ]
+    },
+    {
+      "id": "lbg",
+      "title": "Lifes Been Great",
+      "artist": "Rob Flaco & JDS",
+      "image": "img/LIFES-BEEN-GREAT.jpeg",
+      "gradientStart": "#008c1c",
+      "gradientEnd": "#2900a3",
+      "description": "This album is a collaboration with my friend and producer JDS, a lifelong musician with a strong background in guitar and vocal performance. JDS was responsible for producing and mixing each track, bringing a cohesive and polished sound to the project.",
+      "spotify": "https://open.spotify.com/album/0ncfyKyE4vZOLrbSxAfub7?si=iwgpQhUNQvOSLdh6Y7nD0w",
+      "appleMusic": "https://music.apple.com/us/album/lifes-been-great-ep/1633347160",
+      "tracks": [
+        { "title": "Energy", "file": "audio/LifesBeenGreat/1Energy.wav" },
+        { "title": "No Drama", "file": "audio/LifesBeenGreat/2NoDrama.wav" },
+        { "title": "Jazz", "file": "audio/LifesBeenGreat/3Jazz.wav" },
+        { "title": "Right Now", "file": "audio/LifesBeenGreat/4RightNow.wav" },
+        { "title": "Life's Been Great", "file": "audio/LifesBeenGreat/5LifesBeenGreat.wav" }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "music-player",
+      "title": "Music Player",
+      "image": "img/Project1.jpg",
+      "description": "This is one of my first projects in web development. It is a fully functional music player built with HTML, CSS, and JavaScript. It features three albums, each in various lengths, with the ability to play, pause, skip forward, and skip backward. It also features an interactive progress bar that updates as the song plays, background color that updates based on the album, and a responsive design that looks good on both desktop and mobile devices.",
+      "link": "MusicPlayer.html",
+      "github": "https://github.com/RobFlaco/BriansWebProject",
+      "tags": ["HTML", "CSS", "JavaScript"]
+    }
+  ]
+}
