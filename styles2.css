@@ -1,7 +1,7 @@
 *{
     margin: 0;
     padding: 0;
-    box-sizing: 0;
+    box-sizing: border-box;
     font-family: border-box;
     font-family: 'Poppins';
     text-decoration: none;
@@ -116,6 +116,7 @@ section{
     min-height: 100vh;
     padding: 5rem 5%;
     width: 90%;
+    margin: 0 auto;
     position: relative;
 
 }
@@ -212,10 +213,22 @@ section{
 
 
 
-.music-grid{
+
+
+.projects {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.projects-grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
+    width: 100%;
+    margin: 0 auto;
+
 }
 .project-card{
     padding: 3rem 2rem;

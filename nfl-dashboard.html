@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFL Stats Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#f5a623;--blue:#2979ff;--red:#ff3d3d;--green:#00e676;
+  --text:#eef0f3;--muted:#6b7280;
+  --glass:rgba(10,10,26,0.74);--glass2:rgba(16,16,38,0.82);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+}
+body{font-family:'Barlow',sans-serif;background:#02020f;color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* GALAXY */
+#gc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* LAYERS */
+header,.ticker,main,footer{position:relative;z-index:1}
+
+/* HEADER */
+header{
+  background:rgba(4,4,16,0.88);border-bottom:2px solid var(--gold);
+  padding:.9rem 2rem;display:flex;align-items:center;gap:1.1rem;
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);
+}
+.logo{display:flex;align-items:center;gap:.8rem;cursor:pointer;flex-shrink:0}
+.chip{background:var(--gold);color:#02020f;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.92rem;letter-spacing:.05em;padding:.35rem .62rem;border-radius:5px}
+.logo-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.42rem;letter-spacing:.06em;text-transform:uppercase}
+.logo-title b{color:var(--gold);font-weight:inherit}
+.logo-sub{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* SEARCH */
+.search-wrap{flex:1;max-width:460px;position:relative}
+.search-box{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:8px;padding:.45rem .9rem;transition:border-color .2s;backdrop-filter:blur(8px)}
+.search-box:focus-within{border-color:var(--gold);background:rgba(255,255,255,.09)}
+#si{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Barlow',sans-serif;font-size:.875rem;min-width:0}
+#si::placeholder{color:var(--muted)}
+#xcl{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;display:none;padding:0;line-height:1}
+#xcl:hover{color:var(--text)}
+.drop{position:absolute;top:calc(100% + 6px);left:0;right:0;background:rgba(10,10,30,0.98);border:1px solid var(--border2);border-radius:10px;display:none;z-index:300;box-shadow:0 20px 60px rgba(0,0,0,.9);overflow:hidden;backdrop-filter:blur(20px)}
+.di{display:flex;align-items:center;gap:.65rem;padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s}
+.di:last-child{border-bottom:none}
+.di:hover,.di.hl{background:rgba(245,166,35,.09)}
+.dpos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.08em;padding:.2rem .45rem;border-radius:4px;min-width:30px;text-align:center;flex-shrink:0;background:rgba(245,166,35,.14);color:var(--gold)}
+.dname{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.03em}
+.dmeta{font-size:.7rem;color:var(--muted);margin-top:1px}
+.dlogo{width:22px;height:22px;object-fit:contain;flex-shrink:0;opacity:.9}
+.dmsg{padding:1rem;text-align:center;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.dspin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem}
+
+/* LIVE */
+.live{display:flex;align-items:center;gap:.4rem;background:rgba(255,61,61,.1);border:1px solid rgba(255,61,61,.25);border-radius:2rem;padding:.28rem .8rem;flex-shrink:0}
+.ldot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1.6s ease-in-out infinite}
+.llbl{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+
+/* TICKER */
+.ticker{background:rgba(2,2,12,.78);border-bottom:1px solid var(--border);padding:.48rem 0;overflow:hidden;backdrop-filter:blur(6px)}
+.ttrack{display:flex;gap:2rem;width:max-content;animation:ticker 52s linear infinite}
+.ttrack:hover{animation-play-state:paused}
+.tick{display:flex;align-items:center;gap:.55rem;font-family:'Barlow Condensed',sans-serif;font-size:.84rem;white-space:nowrap}
+.ta{font-weight:700}
+.ts{font-weight:900;color:var(--gold)}
+.tg{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.tsep{color:rgba(255,255,255,.15);font-size:1rem}
+
+/* KEYFRAMES */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* LAYOUT */
+main{max-width:1380px;margin:0 auto;padding:1.75rem 1.75rem 4rem}
+
+/* GLASS CARD */
+.card{background:var(--glass);border:1px solid var(--border2);border-radius:14px;overflow:hidden;backdrop-filter:blur(14px);box-shadow:0 4px 28px rgba(0,0,0,.45)}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.4rem;border-bottom:1px solid var(--border)}
+.ct{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.88rem;text-transform:uppercase;letter-spacing:.12em}
+.tabs{display:flex}
+.tb{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.26rem .7rem;cursor:pointer;color:var(--muted);background:transparent;border:1px solid var(--border2);transition:all .16s}
+.tb:first-child{border-radius:4px 0 0 4px}
+.tb:last-child{border-radius:0 4px 4px 0}
+.tb+.tb{border-left:none}
+.tb.on{background:var(--gold);color:#02020f;border-color:var(--gold)}
+
+/* HERO CARDS */
+.hrow{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.hc{background:var(--glass);border:1px solid var(--border2);border-radius:14px;padding:1.2rem 1.3rem;position:relative;overflow:hidden;backdrop-filter:blur(14px);box-shadow:0 4px 28px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
+.hc:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(0,0,0,.55)}
+.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.hc.g::before{background:var(--gold)}.hc.b::before{background:var(--blue)}.hc.r::before{background:var(--red)}.hc.gr::before{background:var(--green)}
+.hl2{font-family:'Barlow Condensed',sans-serif;font-size:.64rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.38rem}
+.hn{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.12rem;text-transform:uppercase;letter-spacing:.04em;line-height:1.1;margin-bottom:.12rem}
+.hm{font-size:.68rem;color:var(--muted);margin-bottom:.75rem}
+.hv{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;line-height:1;letter-spacing:-.02em}
+.hc.g .hv{color:var(--gold)}.hc.b .hv{color:var(--blue)}.hc.r .hv{color:var(--red)}.hc.gr .hv{color:var(--green)}
+.hu{font-family:'Barlow Condensed',sans-serif;font-size:.74rem;font-weight:600;color:var(--muted);margin-left:.16rem}
+.cnt{display:inline}
+
+/* TWO COL */
+.twocol{display:grid;grid-template-columns:340px 1fr;gap:1.5rem;margin-bottom:1.5rem}
+
+/* STANDINGS */
+.ss{max-height:400px;overflow-y:auto}
+.ss::-webkit-scrollbar{width:3px}
+.ss::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.dl{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:.48rem 1.2rem;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border)}
+.st{width:100%;border-collapse:collapse}
+.st th{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.38rem 1rem;text-align:right;border-bottom:1px solid var(--border)}
+.st th:first-child{text-align:left;padding-left:1.2rem}
+.st td{padding:.5rem 1rem;font-size:.84rem;text-align:right;border-bottom:1px solid rgba(255,255,255,.03)}
+.st td:first-child{padding-left:1.2rem;text-align:left}
+.st tr:last-child td{border-bottom:none}
+.st tr.top{background:rgba(245,166,35,.04)}
+.tc{display:flex;align-items:center;gap:.5rem}
+.td2{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ta2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;letter-spacing:.04em}
+.wl{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.dm{color:var(--muted);font-size:.78rem}
+
+/* CHARTS */
+.cb{padding:1.2rem 1.4rem}
+.pn{display:none}.pn.on{display:block}
+
+/* GAMES */
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.8rem;padding:1.2rem 1.4rem}
+.gc{background:rgba(18,18,44,0.72);border:1px solid var(--border2);border-radius:10px;padding:.85rem 1rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.7rem;backdrop-filter:blur(8px);transition:transform .18s,border-color .18s}
+.gc:hover{transform:translateY(-2px);border-color:rgba(245,166,35,.3)}
+.gs{display:flex;align-items:center;gap:.45rem}
+.gs.r{flex-direction:row-reverse;text-align:right}
+.gstr{width:3px;height:28px;border-radius:2px;flex-shrink:0}
+.gab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.94rem;letter-spacing:.05em}
+.gct{font-size:.64rem;color:var(--muted)}
+.gm{text-align:center}
+.gsc{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.44rem;color:var(--gold);line-height:1}
+.gtg{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.gbg{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.14rem .4rem;border-radius:3px;background:rgba(107,114,128,.15);color:var(--muted);margin-top:3px;display:inline-block}
+
+/* PLAYER VIEW */
+#vp{display:none;animation:fadeUp .28s ease}
+.back{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.4rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:6px;padding:.38rem .85rem;cursor:pointer;transition:all .18s}
+.back:hover{color:var(--text);border-color:var(--gold)}
+
+/* BIO HERO */
+.bio-card{background:var(--glass);border:1px solid var(--border2);border-radius:14px;overflow:hidden;margin-bottom:1.2rem;backdrop-filter:blur(14px);box-shadow:0 4px 32px rgba(0,0,0,.5)}
+.bio-stripe{height:4px}
+.bio-body{display:flex;align-items:center;gap:1.5rem;padding:1.6rem 2rem;flex-wrap:wrap}
+.bio-photo{width:88px;height:88px;border-radius:50%;object-fit:cover;object-position:top;border:3px solid transparent;flex-shrink:0;background:rgba(255,255,255,.05)}
+.bio-init{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;flex-shrink:0;border:3px solid var(--border2)}
+.bio-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.6rem;text-transform:uppercase;letter-spacing:.02em;line-height:1;margin-bottom:.35rem}
+.bio-sub{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.bio-pos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.1em;padding:.2rem .58rem;border-radius:4px}
+.bio-team{font-family:'Barlow Condensed',sans-serif;font-size:.88rem;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:.4rem}
+.bio-tlogo{width:20px;height:20px;object-fit:contain}
+.bio-chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-left:auto;align-self:flex-start}
+.bio-chip{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--muted);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:4px;padding:.26rem .6rem}
+
+/* SEASON TABS */
+.season-tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.stab{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.38rem .9rem;cursor:pointer;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:6px;transition:all .16s}
+.stab:hover{color:var(--text);border-color:var(--border2)}
+.stab.on{color:var(--gold);border-color:var(--gold);background:rgba(245,166,35,.08)}
+
+/* HERO STATS */
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.85rem;margin-bottom:1.2rem}
+.sc{background:var(--glass);border:1px solid var(--border2);border-radius:12px;padding:.95rem 1rem;text-align:center;backdrop-filter:blur(12px);box-shadow:0 2px 18px rgba(0,0,0,.35);transition:transform .18s}
+.sc:hover{transform:translateY(-2px)}
+.scv{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.85rem;line-height:1;margin-bottom:.22rem}
+.scl{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ALL STATS */
+.stats-card{background:var(--glass);border:1px solid var(--border2);border-radius:14px;overflow:hidden;backdrop-filter:blur(14px);box-shadow:0 4px 28px rgba(0,0,0,.4)}
+.stat-section{padding:1rem 1.4rem 0}
+.stat-section:last-child{padding-bottom:1.2rem}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.br{display:flex;align-items:center;padding:.52rem 0;border-bottom:1px solid var(--border)}
+.br:last-child{border-bottom:none}
+.bl{font-size:.82rem;color:var(--muted);min-width:180px;flex-shrink:0}
+.bt{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 1rem;overflow:hidden}
+.bf{height:100%;border-radius:2px;width:0%;transition:width .75s cubic-bezier(.4,0,.2,1)}
+.bv{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.96rem;min-width:62px;text-align:right}
+
+/* LOADING / EMPTY */
+.loading{padding:3rem;text-align:center}
+.spin{width:34px;height:34px;border:3px solid rgba(255,255,255,.08);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+.loading p{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.empty{padding:2.5rem;text-align:center;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase;line-height:1.9}
+
+/* FOOTER */
+footer{text-align:center;padding:1.4rem;color:var(--muted);font-size:.72rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.07em;border-top:1px solid var(--border);background:rgba(2,2,12,.65);backdrop-filter:blur(6px)}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.hrow{grid-template-columns:repeat(2,1fr)}.twocol{grid-template-columns:1fr}}
+@media(max-width:700px){.bio-body{flex-direction:column;align-items:flex-start;gap:1rem}.bio-chips{margin-left:0}.bio-name{font-size:2rem}.bl{min-width:120px}}
+@media(max-width:600px){main,#vp main{padding:1rem 1rem 3rem}.hrow{grid-template-columns:1fr 1fr;gap:.75rem}header{padding:.7rem 1rem;gap:.6rem}.logo-title{font-size:1.1rem}.logo-sub{display:none}.gg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<canvas id="gc"></canvas>
+
+<header>
+  <div class="logo" onclick="showDash()">
+    <div class="chip">NFL</div>
+    <div>
+      <div class="logo-title">Stats <b>Dashboard</b></div>
+      <div class="logo-sub">2025 Season</div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-box">
+      <span style="color:var(--muted);font-size:.85rem;flex-shrink:0">🔍</span>
+      <input id="si" type="text" placeholder="Search any NFL player…" autocomplete="off" spellcheck="false">
+      <button id="xcl" onclick="clearSearch()">✕</button>
+    </div>
+    <div class="drop" id="drop"></div>
+  </div>
+  <div class="live"><div class="ldot"></div><div class="llbl">Live</div></div>
+</header>
+
+<div class="ticker"><div class="ttrack" id="ticker"></div></div>
+
+<!-- DASHBOARD -->
+<div id="vd"><main>
+
+  <div class="hrow">
+    <div class="hc g"><div class="hl2">Passing Leader</div><div class="hn">Joe Burrow</div><div class="hm">Cincinnati Bengals · QB</div><div class="hv"><span class="cnt" data-t="4918">0</span><span class="hu">YDS</span></div></div>
+    <div class="hc b"><div class="hl2">Rushing Leader</div><div class="hn">Saquon Barkley</div><div class="hm">Philadelphia Eagles · RB</div><div class="hv"><span class="cnt" data-t="2005">0</span><span class="hu">YDS</span></div></div>
+    <div class="hc r"><div class="hl2">Receiving Leader</div><div class="hn">Ja'Marr Chase</div><div class="hm">Cincinnati Bengals · WR</div><div class="hv"><span class="cnt" data-t="1708">0</span><span class="hu">YDS</span></div></div>
+    <div class="hc gr"><div class="hl2">TD Leader</div><div class="hn">Derrick Henry</div><div class="hm">Baltimore Ravens · RB</div><div class="hv"><span class="cnt" data-t="16">0</span><span class="hu">TDs</span></div></div>
+  </div>
+
+  <div class="twocol">
+    <div class="card">
+      <div class="ch"><div class="ct">Standings</div><div class="tabs"><button class="tb on" onclick="showConf('AFC',this)">AFC</button><button class="tb" onclick="showConf('NFC',this)">NFC</button></div></div>
+      <div id="sAFC" class="ss"></div><div id="sNFC" class="ss" style="display:none"></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">Stat Leaders</div><div class="tabs"><button class="tb on" onclick="showChart('passing',this)">Passing</button><button class="tb" onclick="showChart('rushing',this)">Rushing</button><button class="tb" onclick="showChart('receiving',this)">Receiving</button></div></div>
+      <div class="cb">
+        <div id="pn-passing" class="pn on"><div style="position:relative;height:250px"><canvas id="cpass"></canvas></div></div>
+        <div id="pn-rushing" class="pn"><div style="position:relative;height:250px"><canvas id="crush"></canvas></div></div>
+        <div id="pn-receiving" class="pn"><div style="position:relative;height:250px"><canvas id="crec"></canvas></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ct">Playoff Results</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">2024–25 Playoffs</div></div>
+    <div class="gg" id="gg"></div>
+  </div>
+
+</main></div>
+
+<!-- PLAYER VIEW -->
+<div id="vp"><main>
+  <button class="back" onclick="showDash()">← Dashboard</button>
+  <div id="pc"></div>
+</main></div>
+
+<footer>NFL Stats Dashboard &nbsp;·&nbsp; Player index &amp; stats via Sleeper API &nbsp;·&nbsp; Photos via ESPN CDN</footer>
+
+<script>
+/* ══════════════════════════════════════════════════
+   GALAXY CANVAS — same animation as the portfolio
+══════════════════════════════════════════════════ */
+(()=>{
+  const cv=document.getElementById('gc'), ctx=cv.getContext('2d');
+  let W,H,stars=[],neb=[];
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
+  const init=()=>{
+    stars=[];
+    for(let i=0;i<220;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,vy:Math.random()*.3+.05,tw:Math.random()*Math.PI*2,ts:Math.random()*.02+.005});
+    neb=[];
+    const c=['rgba(80,40,160,','rgba(30,60,160,','rgba(160,40,80,','rgba(40,100,120,','rgba(100,30,140,'];
+    for(let i=0;i<6;i++) neb.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*140+70,c:c[i%c.length],dx:(Math.random()-.5)*.12,dy:(Math.random()-.5)*.12});
+  };
+  const frame=()=>{
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#02020f'; ctx.fillRect(0,0,W,H);
+    neb.forEach(n=>{
+      n.x+=n.dx; n.y+=n.dy;
+      if(n.x<-n.r)n.x=W+n.r; if(n.x>W+n.r)n.x=-n.r;
+      if(n.y<-n.r)n.y=H+n.r; if(n.y>H+n.r)n.y=-n.r;
+      const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
+      g.addColorStop(0,n.c+'0.18)'); g.addColorStop(1,n.c+'0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+    });
+    stars.forEach(s=>{
+      s.tw+=s.ts; s.y+=s.vy; if(s.y>H){s.y=0;s.x=Math.random()*W;}
+      const a=.5+.5*Math.sin(s.tw);
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${a})`; ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  };
+  resize(); init(); frame();
+  addEventListener('resize',()=>{resize();init();});
+})();
+
+/* ══════════════════════════════════════════════════
+   STATIC DASHBOARD DATA
+══════════════════════════════════════════════════ */
+const TGAMES=[
+  {a:'KC',b:'PHI',as:22,bs:40,tag:'Super Bowl LIX'},{a:'WAS',b:'PHI',as:23,bs:55,tag:'NFC Champ.'},
+  {a:'BUF',b:'KC',as:29,bs:32,tag:'AFC Champ.'},{a:'DET',b:'WAS',as:31,bs:45,tag:'Divisional'},
+  {a:'LAR',b:'PHI',as:10,bs:22,tag:'Divisional'},{a:'HOU',b:'KC',as:14,bs:23,tag:'Divisional'},
+  {a:'DEN',b:'BUF',as:7,bs:31,tag:'Wild Card'},{a:'PIT',b:'BAL',as:14,bs:28,tag:'Wild Card'},
+];
+const STD={
+  AFC:[
+    {d:'AFC West', t:[{a:'KC',c:'E31837',w:15,l:2,p:.882,gb:'-'},{a:'LAC',c:'0080C6',w:11,l:6,p:.647,gb:'4'},{a:'DEN',c:'FB4F14',w:10,l:7,p:.588,gb:'5'},{a:'LV',c:'A5ACAF',w:4,l:13,p:.235,gb:'11'}]},
+    {d:'AFC North',t:[{a:'BAL',c:'241773',w:12,l:5,p:.706,gb:'-'},{a:'PIT',c:'FFB612',w:10,l:7,p:.588,gb:'2'},{a:'CIN',c:'FB4F14',w:9,l:8,p:.529,gb:'3'},{a:'CLE',c:'FF3C00',w:3,l:14,p:.176,gb:'9'}]},
+    {d:'AFC East', t:[{a:'BUF',c:'00338D',w:13,l:4,p:.765,gb:'-'},{a:'MIA',c:'008E97',w:8,l:9,p:.471,gb:'5'},{a:'NYJ',c:'125740',w:5,l:12,p:.294,gb:'8'},{a:'NE',c:'002244',w:4,l:13,p:.235,gb:'9'}]},
+    {d:'AFC South',t:[{a:'HOU',c:'03202F',w:10,l:7,p:.588,gb:'-'},{a:'IND',c:'002C5F',w:8,l:9,p:.471,gb:'2'},{a:'JAX',c:'006778',w:4,l:13,p:.235,gb:'6'},{a:'TEN',c:'4B92DB',w:3,l:14,p:.176,gb:'7'}]},
+  ],
+  NFC:[
+    {d:'NFC East', t:[{a:'PHI',c:'004C54',w:14,l:3,p:.824,gb:'-'},{a:'WAS',c:'5A1414',w:12,l:5,p:.706,gb:'2'},{a:'DAL',c:'003594',w:7,l:10,p:.412,gb:'7'},{a:'NYG',c:'0B2265',w:3,l:14,p:.176,gb:'11'}]},
+    {d:'NFC North',t:[{a:'DET',c:'0076B6',w:15,l:2,p:.882,gb:'-'},{a:'MIN',c:'4F2683',w:14,l:3,p:.824,gb:'1'},{a:'GB',c:'203731',w:11,l:6,p:.647,gb:'4'},{a:'CHI',c:'0B162A',w:5,l:12,p:.294,gb:'10'}]},
+    {d:'NFC South',t:[{a:'ATL',c:'A71930',w:8,l:9,p:.471,gb:'-'},{a:'TB',c:'D50A0A',w:8,l:9,p:.471,gb:'-'},{a:'NO',c:'D3BC8D',w:5,l:12,p:.294,gb:'3'},{a:'CAR',c:'0085CA',w:5,l:12,p:.294,gb:'3'}]},
+    {d:'NFC West', t:[{a:'LAR',c:'003594',w:10,l:7,p:.588,gb:'-'},{a:'SEA',c:'002244',w:10,l:7,p:.588,gb:'-'},{a:'ARI',c:'97233F',w:8,l:9,p:.471,gb:'2'},{a:'SF',c:'AA0000',w:6,l:11,p:.353,gb:'4'}]},
+  ]
+};
+const LDR={
+  passing: [{n:'Burrow',v:4918},{n:'Darnold',v:4319},{n:'Jackson',v:4172},{n:'Hurts',v:3903},{n:'Allen',v:3731}],
+  rushing: [{n:'Barkley',v:2005},{n:'Henry',v:1921},{n:'Robinson',v:1456},{n:'Jacobs',v:1329},{n:'Achane',v:1289}],
+  receiving:[{n:'Chase',v:1708},{n:'Jefferson',v:1533},{n:'Nacua',v:1462},{n:'Lamb',v:1194},{n:'Hill',v:1155}],
+};
+const PGAMES=[
+  {a:'KC',ac:'E31837',an:'Chiefs',as:22,h:'PHI',hc:'004C54',hn:'Eagles',hs:40,tag:'Super Bowl LIX'},
+  {a:'WAS',ac:'5A1414',an:'Commanders',as:23,h:'PHI',hc:'004C54',hn:'Eagles',hs:55,tag:'NFC Championship'},
+  {a:'BUF',ac:'00338D',an:'Bills',as:29,h:'KC',hc:'E31837',hn:'Chiefs',hs:32,tag:'AFC Championship'},
+  {a:'DET',ac:'0076B6',an:'Lions',as:31,h:'WAS',hc:'5A1414',hn:'Commanders',hs:45,tag:'Divisional'},
+  {a:'LAR',ac:'003594',an:'Rams',as:10,h:'PHI',hc:'004C54',hn:'Eagles',hs:22,tag:'Divisional'},
+  {a:'HOU',ac:'03202F',an:'Texans',as:14,h:'KC',hc:'E31837',hn:'Chiefs',hs:23,tag:'Divisional'},
+  {a:'DEN',ac:'FB4F14',an:'Broncos',as:7,h:'BUF',hc:'00338D',hn:'Bills',hs:31,tag:'Wild Card'},
+  {a:'LAR',ac:'003594',an:'Rams',as:9,h:'MIN',hc:'4F2683',hn:'Vikings',hs:27,tag:'Wild Card'},
+];
+const TC={ARI:'#97233F',ATL:'#A71930',BAL:'#241773',BUF:'#00338D',CAR:'#0085CA',CHI:'#0B162A',CIN:'#FB4F14',CLE:'#FF3C00',DAL:'#003594',DEN:'#FB4F14',DET:'#0076B6',GB:'#203731',HOU:'#03202F',IND:'#002C5F',JAX:'#006778',KC:'#E31837',LAC:'#0080C6',LAR:'#003594',LV:'#A5ACAF',MIA:'#008E97',MIN:'#4F2683',NE:'#002244',NO:'#D3BC8D',NYG:'#0B2265',NYJ:'#125740',PHI:'#004C54',PIT:'#FFB612',SF:'#AA0000',SEA:'#002244',TB:'#D50A0A',TEN:'#4B92DB',WAS:'#5A1414'};
+const TN={ARI:'Arizona Cardinals',ATL:'Atlanta Falcons',BAL:'Baltimore Ravens',BUF:'Buffalo Bills',CAR:'Carolina Panthers',CHI:'Chicago Bears',CIN:'Cincinnati Bengals',CLE:'Cleveland Browns',DAL:'Dallas Cowboys',DEN:'Denver Broncos',DET:'Detroit Lions',GB:'Green Bay Packers',HOU:'Houston Texans',IND:'Indianapolis Colts',JAX:'Jacksonville Jaguars',KC:'Kansas City Chiefs',LAC:'LA Chargers',LAR:'LA Rams',LV:'Las Vegas Raiders',MIA:'Miami Dolphins',MIN:'Minnesota Vikings',NE:'New England Patriots',NO:'New Orleans Saints',NYG:'New York Giants',NYJ:'New York Jets',PHI:'Philadelphia Eagles',PIT:'Pittsburgh Steelers',SF:'San Francisco 49ers',SEA:'Seattle Seahawks',TB:'Tampa Bay Buccaneers',TEN:'Tennessee Titans',WAS:'Washington Commanders'};
+
+/* ══════════════════════════════════════════════════
+   STAT METADATA
+   Defines human label, category, bar max, and
+   optional decimal formatting for every Sleeper key.
+   Keys not listed here will still be shown if they
+   have a value — they'll just say "unknown".
+══════════════════════════════════════════════════ */
+const SM={
+  /* Passing */
+  pass_yd:     {l:'Passing Yards',      cat:'Passing',   max:5500},
+  pass_att:    {l:'Attempts',           cat:'Passing',   max:700},
+  pass_cmp:    {l:'Completions',        cat:'Passing',   max:450},
+  pass_td:     {l:'Passing TDs',        cat:'Passing',   max:50},
+  pass_int:    {l:'Interceptions',      cat:'Passing',   max:20},
+  pass_sack:   {l:'Times Sacked',       cat:'Passing',   max:60},
+  pass_2pt:    {l:'2-Pt Conv (Pass)',   cat:'Passing',   max:5},
+  /* Rushing */
+  rush_yd:     {l:'Rushing Yards',      cat:'Rushing',   max:2200},
+  rush_att:    {l:'Carries',            cat:'Rushing',   max:400},
+  rush_td:     {l:'Rushing TDs',        cat:'Rushing',   max:22},
+  rush_fd:     {l:'First Downs',        cat:'Rushing',   max:100},
+  rush_lng:    {l:'Long Run',           cat:'Rushing',   max:80},
+  rush_2pt:    {l:'2-Pt Conv (Rush)',   cat:'Rushing',   max:5},
+  /* Receiving */
+  rec:         {l:'Receptions',         cat:'Receiving', max:125},
+  rec_tgt:     {l:'Targets',            cat:'Receiving', max:180},
+  rec_yd:      {l:'Receiving Yards',    cat:'Receiving', max:1800},
+  rec_td:      {l:'Receiving TDs',      cat:'Receiving', max:22},
+  rec_fd:      {l:'First Downs',        cat:'Receiving', max:100},
+  rec_lng:     {l:'Long Catch',         cat:'Receiving', max:80},
+  rec_2pt:     {l:'2-Pt Conv (Rec)',    cat:'Receiving', max:5},
+  /* Defense */
+  tkl:         {l:'Total Tackles',      cat:'Defense',   max:175},
+  tkl_solo:    {l:'Solo Tackles',       cat:'Defense',   max:130},
+  tkl_ast:     {l:'Assisted Tackles',   cat:'Defense',   max:70},
+  tkl_loss:    {l:'Tackles for Loss',   cat:'Defense',   max:28},
+  sack:        {l:'Sacks',              cat:'Defense',   max:20,  dec:1},
+  def_sack_yd: {l:'Sack Yards',         cat:'Defense',   max:200},
+  qb_hit:      {l:'QB Hits',            cat:'Defense',   max:55},
+  int:         {l:'Interceptions',      cat:'Defense',   max:10},
+  def_pass_def:{l:'Pass Deflections',   cat:'Defense',   max:22},
+  ff:          {l:'Forced Fumbles',     cat:'Defense',   max:7},
+  fr:          {l:'Fumble Recoveries',  cat:'Defense',   max:5},
+  def_td:      {l:'Defensive TDs',      cat:'Defense',   max:4},
+  int_ret_yd:  {l:'INT Return Yards',   cat:'Defense',   max:200},
+  /* Kicking */
+  fgm:         {l:'FG Made',            cat:'Kicking',   max:42},
+  fga:         {l:'FG Attempted',       cat:'Kicking',   max:46},
+  fgm_0_19:    {l:'FG Made (0–19 yd)', cat:'Kicking',   max:5},
+  fgm_20_29:   {l:'FG Made (20–29 yd)',cat:'Kicking',   max:14},
+  fgm_30_39:   {l:'FG Made (30–39 yd)',cat:'Kicking',   max:14},
+  fgm_40_49:   {l:'FG Made (40–49 yd)',cat:'Kicking',   max:12},
+  fgm_50p:     {l:'FG Made (50+ yd)',  cat:'Kicking',   max:9},
+  fg_lng:      {l:'Long FG',            cat:'Kicking',   max:70},
+  xpm:         {l:'Extra Points Made',  cat:'Kicking',   max:65},
+  xpa:         {l:'Extra Points Att.',  cat:'Kicking',   max:66},
+  xpmiss:      {l:'Extra Points Missed',cat:'Kicking',   max:6},
+  /* Special Teams */
+  st_td:       {l:'ST Touchdowns',      cat:'Special Teams', max:3},
+  st_tkl:      {l:'ST Tackles',         cat:'Special Teams', max:30},
+  st_tkl_solo: {l:'ST Solo Tackles',    cat:'Special Teams', max:25},
+  st_ff:       {l:'ST Forced Fumbles',  cat:'Special Teams', max:3},
+  st_fr:       {l:'ST Fumble Rec.',     cat:'Special Teams', max:2},
+  /* General */
+  gp:          {l:'Games Played',       cat:'General',   max:18},
+  gs:          {l:'Games Started',      cat:'General',   max:18},
+  fum:         {l:'Fumbles',            cat:'General',   max:10},
+  fum_lost:    {l:'Fumbles Lost',       cat:'General',   max:10},
+};
+
+/* skip these — they're fantasy scoring, not real stats */
+const SKIP=new Set(['pts_ppr','pts_half_ppr','pts_std','pos_rank_ppr','pos_rank_std',
+  'rec_ppr','rec_0.5','rec_1.0','bonus_rec_te','bonus_rec_wr','bonus_rec_rb',
+  'bonus_rush_att_100','bonus_rush_yd_200','bonus_rec_yd_100','bonus_rec_yd_200',
+  'bonus_pass_yd_300','bonus_pass_yd_400','bonus_pass_yd_500',
+  'sack_yd','fga_0_19','fga_20_29','fga_30_39','fga_40_49','fga_50p',
+  'tm_def_st_td','tm_st_td','idp_tkl','idp_tkl_solo','idp_tkl_ast',
+  'pass_inc','pass_rtg','rush_avg','rec_avg']);
+
+/* ══════════════════════════════════════════════════
+   SLEEPER API
+   /v1/players/nfl          — all active players
+   /v1/stats/nfl/regular/{year}/{week}
+                            — every player's stats for that week
+   
+   Fetch all 18 weeks per season in parallel,
+   then sum the target player's stats across all weeks.
+   Each season is cached after first fetch so switching
+   season tabs is instant.
+══════════════════════════════════════════════════ */
+let playerIndex=[], playerMap={}, indexReady=false;
+const seasonCache={}; /* year → { week: { playerId: {stat:val} } } */
+const SEASONS=[2025,2024,2023,2022,2021];
+const NUM_WEEKS=yr=> yr>=2021 ? 18 : 17;
+
+const SHOW_POS=new Set(['QB','RB','WR','TE','FB','K','P','DE','DT','LB','CB','S','OLB','ILB','MLB','SS','FS','NT','DB']);
+
+async function loadPlayers(){
+  try{
+    const raw=await fetch('https://api.sleeper.app/v1/players/nfl').then(r=>r.json());
+    Object.values(raw).forEach(p=>{
+      // Must have a position we care about
+      if(!p.position||!SHOW_POS.has(p.position)) return;
+      // Must have a name
+      if(!p.full_name&&!p.first_name) return;
+      // Include if: currently active, OR has NFL experience, OR has an ESPN id.
+      // This catches free agents, IR players, and veterans like Rodgers who
+      // Sleeper may mark inactive between seasons.
+      const hasExp   = p.years_exp!=null && p.years_exp>=0;
+      const hasEspnId= !!p.espn_id;
+      if(!p.active && !hasExp && !hasEspnId) return;
+      const team=(p.team||'FA').toUpperCase();
+      const obj={
+        id:      p.player_id,
+        espnId:  p.espn_id||'',
+        name:    p.full_name||[p.first_name,p.last_name].filter(Boolean).join(' '),
+        first:   p.first_name||'',
+        last:    p.last_name||'',
+        pos:     p.position,
+        team,
+        teamFull:TN[team]||team,
+        color:   TC[team]||'#888888',
+        jersey:  p.number||'',
+        age:     p.age||null,
+        height:  p.height||'',
+        weight:  p.weight?p.weight+'lbs':'',
+        exp:     p.years_exp??null,
+        college: p.college||'',
+        city:    p.birth_city||'',
+        state:   p.birth_state||'',
+      };
+      playerIndex.push(obj);
+      playerMap[p.player_id]=obj;
+    });
+    playerIndex.sort((a,b)=>a.last.localeCompare(b.last));
+    indexReady=true;
+    const q=document.getElementById('si').value.trim();
+    if(q) doSearch(q);
+  }catch(e){
+    console.warn('Player load failed:',e);
+    indexReady=true;
+  }
+}
+
+async function loadSeason(year){
+  if(seasonCache[year]) return seasonCache[year];
+  const weeks=NUM_WEEKS(year);
+  const urls=Array.from({length:weeks},(_,i)=>
+    `https://api.sleeper.app/v1/stats/nfl/regular/${year}/${i+1}`
+  );
+  const results=await Promise.all(
+    urls.map(u=>fetch(u).then(r=>r.ok?r.json():{}).catch(()=>({})))
+  );
+  const data={};
+  results.forEach((w,i)=>{ data[i+1]=w||{}; });
+  seasonCache[year]=data;
+  return data;
+}
+
+function aggregatePlayer(seasonData, playerId){
+  const totals={};
+  Object.values(seasonData).forEach(week=>{
+    const ps=week[playerId];
+    if(!ps) return;
+    Object.entries(ps).forEach(([k,v])=>{
+      if(typeof v==='number' && !SKIP.has(k)){
+        totals[k]=(totals[k]||0)+v;
+      }
+    });
+  });
+  return Object.keys(totals).length>0 ? totals : null;
+}
+
+/* ══════════════════════════════════════════════════
+   SEARCH
+══════════════════════════════════════════════════ */
+const si=document.getElementById('si');
+const xcl=document.getElementById('xcl');
+const drop=document.getElementById('drop');
+let focusI=-1, srchTimer=null;
+
+si.addEventListener('input',()=>{
+  const q=si.value.trim();
+  xcl.style.display=q?'block':'none';
+  clearTimeout(srchTimer);
+  if(!q){hideDrop();return;}
+  if(!indexReady){showMsg('<span class="dspin"></span>Loading players…');return;}
+  srchTimer=setTimeout(()=>doSearch(q),100);
+});
+
+si.addEventListener('keydown',e=>{
+  const items=drop.querySelectorAll('.di');
+  if(e.key==='ArrowDown'){e.preventDefault();focusI=Math.min(focusI+1,items.length-1);setFocus(items);}
+  else if(e.key==='ArrowUp'){e.preventDefault();focusI=Math.max(focusI-1,0);setFocus(items);}
+  else if(e.key==='Enter'&&focusI>=0&&items[focusI]) items[focusI].click();
+  else if(e.key==='Escape'){hideDrop();si.blur();}
+});
+
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))hideDrop();});
+
+function setFocus(items){items.forEach((el,i)=>el.classList.toggle('hl',i===focusI));if(items[focusI])items[focusI].scrollIntoView({block:'nearest'});}
+function hideDrop(){drop.style.display='none';focusI=-1;}
+function clearSearch(){si.value='';xcl.style.display='none';hideDrop();si.focus();}
+function showMsg(html){drop.innerHTML=`<div class="dmsg">${html}</div>`;drop.style.display='block';}
+
+function doSearch(q){
+  focusI=-1;
+  const ql=q.toLowerCase();
+  const hits=playerIndex.filter(p=>p.name.toLowerCase().includes(ql)).slice(0,8);
+  if(!hits.length){showMsg('No players found');return;}
+  const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+  drop.innerHTML=hits.map(p=>{
+    const hi=p.name.replace(re,`<span style="color:var(--gold)">$1</span>`);
+    const logo=`https://a.espncdn.com/i/teamlogos/nfl/500/${p.team.toLowerCase()}.png`;
+    return`<div class="di" onclick="openPlayer('${p.id}')">
+      <span class="dpos">${p.pos}</span>
+      <div style="flex:1;min-width:0">
+        <div class="dname">${hi}</div>
+        <div class="dmeta">${p.teamFull}${p.jersey?' · #'+p.jersey:''}${p.team==='FA'?' · Free Agent':''}</div>
+      </div>
+      <img class="dlogo" src="${logo}" alt="" onerror="this.style.display='none'">
+    </div>`;
+  }).join('');
+  drop.style.display='block';
+}
+
+/* ══════════════════════════════════════════════════
+   PLAYER VIEW
+══════════════════════════════════════════════════ */
+let currentPlayer=null, currentYear=SEASONS[0];
+
+async function openPlayer(id){
+  hideDrop(); clearSearch();
+  currentPlayer=playerMap[id];
+  currentYear=SEASONS[0];
+  if(!currentPlayer)return;
+  showView('player');
+
+  const p=currentPlayer;
+  const col=p.color;
+  const photo=p.espnId?`https://a.espncdn.com/i/headshots/nfl/players/full/${p.espnId}.png`:'';
+  const logo=`https://a.espncdn.com/i/teamlogos/nfl/500/${p.team.toLowerCase()}.png`;
+  const ini=(p.first[0]||'')+(p.last[0]||'');
+
+  /* Render bio immediately — no fetch needed */
+  document.getElementById('pc').innerHTML=`
+    <div class="bio-card">
+      <div class="bio-stripe" style="background:${col}"></div>
+      <div class="bio-body">
+        ${photo
+          ?`<img class="bio-photo" src="${photo}" style="border-color:${col}" onerror="this.outerHTML='<div class=bio-init style=background:${col}22;border-color:${col};color:${col}>${ini}</div>'">`
+          :`<div class="bio-init" style="background:${col}22;border-color:${col};color:${col}">${ini}</div>`}
+        <div style="flex:1;min-width:180px">
+          <div class="bio-name">${p.name}</div>
+          <div class="bio-sub">
+            <span class="bio-pos" style="background:${col}22;color:${col}">${p.pos}</span>
+            <span class="bio-team">
+              <img class="bio-tlogo" src="${logo}" alt="" onerror="this.style.display='none'">
+              ${p.teamFull}${p.jersey?' · #'+p.jersey:''}
+            </span>
+          </div>
+        </div>
+        <div class="bio-chips">
+          ${p.age?`<span class="bio-chip">${p.age} yrs</span>`:''}
+          ${p.height?`<span class="bio-chip">${p.height}</span>`:''}
+          ${p.weight?`<span class="bio-chip">${p.weight}</span>`:''}
+          ${p.exp!=null?`<span class="bio-chip">Yr ${p.exp+1}</span>`:''}
+          ${p.college?`<span class="bio-chip">${p.college}</span>`:''}
+          ${p.city?`<span class="bio-chip">${p.city}${p.state?', '+p.state:''}</span>`:''}
+        </div>
+      </div>
+    </div>
+
+    <!-- Season tabs -->
+    <div class="season-tabs">
+      ${SEASONS.map((yr,i)=>`
+        <button class="stab ${i===0?'on':''}" onclick="switchSeason(${yr},this)">${yr}</button>
+      `).join('')}
+    </div>
+
+    <!-- Stats area — updated per season -->
+    <div id="stats-area">
+      <div class="loading"><div class="spin"></div><p>Loading ${SEASONS[0]} season stats…</p></div>
+    </div>
+  `;
+
+  /* Fetch 2025 stats immediately */
+  await renderSeasonStats(p.id, SEASONS[0]);
+}
+
+async function switchSeason(year, btn){
+  if(!currentPlayer) return;
+  currentYear=year;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('stats-area').innerHTML=
+    `<div class="loading"><div class="spin"></div><p>Loading ${year} season stats…</p></div>`;
+  await renderSeasonStats(currentPlayer.id, year);
+}
+
+async function renderSeasonStats(playerId, year){
+  const area=document.getElementById('stats-area');
+  if(!area) return;
+  const col=playerMap[playerId]?.color||'#f5a623';
+  const pos=(playerMap[playerId]?.pos||'').toUpperCase();
+
+  let raw=null;
+  try{
+    const sd=await loadSeason(year);
+    raw=aggregatePlayer(sd, playerId);
+  }catch(e){
+    area.innerHTML=`<div class="empty">Failed to load stats. Check your connection.</div>`;
+    return;
+  }
+
+  if(!raw||Object.keys(raw).length===0){
+    area.innerHTML=`
+      <div class="empty">
+        No ${year} regular season stats found for this player.<br>
+        <span style="font-size:.78rem;opacity:.55">They may not have played in ${year}, or the data is unavailable.</span>
+      </div>`;
+    return;
+  }
+
+  /* Add computed stats */
+  if(raw.pass_att>0 && raw.pass_cmp>0){
+    raw._cmp_pct  = +(raw.pass_cmp/raw.pass_att*100).toFixed(1);
+    raw._yds_att  = +(raw.pass_yd/raw.pass_att).toFixed(1);
+  }
+  if(raw.rush_att>0 && raw.rush_yd>0){
+    raw._yds_carry = +(raw.rush_yd/raw.rush_att).toFixed(2);
+  }
+  if(raw.rec>0 && raw.rec_yd>0){
+    raw._yds_rec  = +(raw.rec_yd/raw.rec).toFixed(1);
+  }
+  if(raw.rec>0 && raw.rec_tgt>0){
+    raw._catch_rate = +(raw.rec/raw.rec_tgt*100).toFixed(1);
+  }
+  if(raw.fgm>0 && raw.fga>0){
+    raw._fg_pct   = +(raw.fgm/raw.fga*100).toFixed(1);
+  }
+  if(raw.xpm!=null && raw.xpa>0){
+    raw._xp_pct   = +(raw.xpm/raw.xpa*100).toFixed(1);
+  }
+
+  /* Computed stat metadata */
+  const COMPUTED={
+    _cmp_pct:   {l:'Completion %',   cat:'Passing',   max:75,  dec:1, sfx:'%'},
+    _yds_att:   {l:'Yards / Attempt',cat:'Passing',   max:12,  dec:1},
+    _yds_carry: {l:'Yards / Carry',  cat:'Rushing',   max:8,   dec:1},
+    _yds_rec:   {l:'Yards / Rec.',   cat:'Receiving', max:20,  dec:1},
+    _catch_rate:{l:'Catch Rate',     cat:'Receiving', max:85,  dec:1, sfx:'%'},
+    _fg_pct:    {l:'FG Percentage',  cat:'Kicking',   max:100, dec:1, sfx:'%'},
+    _xp_pct:    {l:'XP Percentage',  cat:'Kicking',   max:100, dec:1, sfx:'%'},
+  };
+
+  /* Build hero stats (top position-relevant numbers) */
+  const HERO_KEYS={
+    QB: ['pass_yd','pass_td','pass_int','_cmp_pct','rush_yd'],
+    RB: ['rush_yd','rush_td','_yds_carry','rec','rec_yd'],
+    FB: ['rush_yd','rush_td','rec','rec_yd'],
+    WR: ['rec_yd','rec_td','rec','rec_tgt','_yds_rec'],
+    TE: ['rec_yd','rec_td','rec','rec_tgt','_yds_rec'],
+    K:  ['fgm','_fg_pct','xpm','fg_lng'],
+  };
+  const defHero=['tkl','sack','int','def_pass_def','ff'];
+  const heroKeys=HERO_KEYS[pos]||defHero;
+
+  const allMeta={...SM,...COMPUTED};
+  const heroStats=heroKeys
+    .map(k=>{
+      const v=raw[k]; if(v==null||v===0) return null;
+      const m=allMeta[k]||{l:k,max:100};
+      const sfx=m.sfx||'';
+      const disp=m.dec ? (+v).toFixed(m.dec)+sfx : Math.round(v).toLocaleString()+sfx;
+      return {v:disp, l:m.l};
+    })
+    .filter(Boolean);
+
+  /* Group all non-zero stats by category */
+  const groups={};
+  Object.entries(raw).forEach(([k,v])=>{
+    if(v==null||v===0) return;
+    if(SKIP.has(k)) return;
+    const m=allMeta[k];
+    const cat=m?.cat||(k.startsWith('_')?'Computed':'Other');
+    if(!groups[cat]) groups[cat]=[];
+    const sfx=m?.sfx||'';
+    const dec=m?.dec||0;
+    const disp=dec?(+v).toFixed(dec)+sfx:Math.round(v).toLocaleString()+sfx;
+    const maxVal=m?.max||Math.max(v*1.5,1);
+    groups[cat].push({l:m?.l||k.replace(/_/g,' '),v:disp,p:Math.min(1,(+v)/maxVal)});
+  });
+
+  /* Preferred section order */
+  const ORDER=['Passing','Rushing','Receiving','Defense','Kicking','Special Teams','General','Computed','Other'];
+
+  const html=`
+    ${heroStats.length?`
+    <div class="stat-cards">
+      ${heroStats.slice(0,6).map(s=>`
+        <div class="sc">
+          <div class="scv" style="color:${col}">${s.v}</div>
+          <div class="scl">${s.l}</div>
+        </div>`).join('')}
+    </div>`:''}
+    <div class="stats-card">
+      ${ORDER.filter(cat=>groups[cat]?.length).map(cat=>`
+        <div class="stat-section">
+          <div class="sec-title">${cat}</div>
+          ${groups[cat].map(r=>`
+            <div class="br">
+              <span class="bl">${r.l}</span>
+              <div class="bt"><div class="bf" style="background:${col}" data-w="${Math.round(r.p*100)}"></div></div>
+              <span class="bv">${r.v}</span>
+            </div>`).join('')}
+        </div>`).join('')}
+    </div>
+  `;
+
+  area.innerHTML=html;
+
+  /* Animate bars after paint */
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    area.querySelectorAll('.bf[data-w]').forEach(b=>{ b.style.width=b.dataset.w+'%'; });
+  }));
+}
+
+/* ══════════════════════════════════════════════════
+   VIEW SWITCH
+══════════════════════════════════════════════════ */
+function showView(v){
+  document.getElementById('vd').style.display = v==='dash'?'block':'none';
+  document.getElementById('vp').style.display = v==='player'?'block':'none';
+  scrollTo({top:0,behavior:'smooth'});
+}
+function showDash(){ showView('dash'); }
+
+/* ══════════════════════════════════════════════════
+   DASHBOARD BUILDERS
+══════════════════════════════════════════════════ */
+function buildTicker(){
+  const all=[...TGAMES,...TGAMES];
+  document.getElementById('ticker').innerHTML=all.map(g=>
+    `<div class="tick"><span class="ta">${g.a}</span><span class="ts">${g.as}–${g.bs}</span><span class="ta">${g.b}</span><span class="tg">${g.tag}</span></div><span class="tsep">·</span>`
+  ).join('');
+}
+
+function buildStandings(conf){
+  const el=document.getElementById('s'+conf);
+  let h='';
+  STD[conf].forEach(div=>{
+    h+=`<div class="dl">${div.d}</div><table class="st"><thead><tr><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr></thead><tbody>`;
+    div.t.forEach((t,i)=>{
+      h+=`<tr class="${i===0?'top':''}"><td><div class="tc"><div class="td2" style="background:#${t.c}"></div><div class="ta2">${t.a}</div></div></td><td class="wl">${t.w}</td><td class="wl">${t.l}</td><td class="dm">${t.p.toFixed(3)}</td><td class="dm">${t.gb}</td></tr>`;
+    });
+    h+='</tbody></table>';
+  });
+  el.innerHTML=h;
+}
+
+function showConf(conf,btn){
+  ['AFC','NFC'].forEach(c=>{ document.getElementById('s'+c).style.display=c===conf?'block':'none'; });
+  btn.closest('.tabs').querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+const _ch={};
+function buildBar(id,labels,data,color,label){
+  const el=document.getElementById(id); if(!el) return;
+  if(_ch[id]) _ch[id].destroy();
+  _ch[id]=new Chart(el,{type:'bar',
+    data:{labels,datasets:[{label,data,backgroundColor:color+'bb',borderColor:color,borderWidth:1,borderRadius:4,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(8,8,24,.96)',titleColor:'#f5a623',bodyColor:'#eef0f3',borderColor:'rgba(255,255,255,.1)',borderWidth:1}},
+      scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:11}}},y:{grid:{display:false},ticks:{color:'#eef0f3',font:{weight:'700',size:12}}}},
+      animation:{duration:900,easing:'easeOutQuart'}}});
+}
+
+function buildCharts(){
+  const s=arr=>[...arr].sort((a,b)=>a.v-b.v);
+  const p=s(LDR.passing), r=s(LDR.rushing), c=s(LDR.receiving);
+  buildBar('cpass',p.map(x=>x.n),p.map(x=>x.v),'#f5a623','Pass Yds');
+  buildBar('crush',r.map(x=>x.n),r.map(x=>x.v),'#2979ff','Rush Yds');
+  buildBar('crec', c.map(x=>x.n),c.map(x=>x.v),'#ff3d3d','Rec Yds');
+}
+
+function showChart(name,btn){
+  document.querySelectorAll('.pn').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pn-'+name).classList.add('on');
+  btn.closest('.tabs').querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function buildGames(){
+  document.getElementById('gg').innerHTML=PGAMES.map(g=>`
+    <div class="gc">
+      <div class="gs"><div class="gstr" style="background:#${g.ac}"></div><div><div class="gab">${g.a}</div><div class="gct">${g.an}</div></div></div>
+      <div class="gm"><div class="gsc">${g.as}–${g.hs}</div><div class="gtg">${g.tag}</div><div class="gbg">Final</div></div>
+      <div class="gs r"><div class="gstr" style="background:#${g.hc}"></div><div><div class="gab">${g.h}</div><div class="gct">${g.hn}</div></div></div>
+    </div>`).join('');
+}
+
+function animCounters(){
+  document.querySelectorAll('.cnt').forEach(el=>{
+    const t=parseInt(el.dataset.t), step=t/80; let cur=0;
+    const id=setInterval(()=>{cur=Math.min(cur+step,t);el.textContent=Math.floor(cur).toLocaleString();if(cur>=t)clearInterval(id);},16);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════════ */
+buildTicker();
+buildStandings('AFC');
+buildStandings('NFC');
+buildGames();
+showView('dash');
+
+window.addEventListener('load',()=>{
+  buildCharts();
+  animCounters();
+  loadPlayers(); /* Sleeper player index loads in background */
+});
+</script>
+</body>
+</html>

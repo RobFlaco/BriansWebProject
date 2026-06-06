@@ -1,0 +1,214 @@
+<svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" font-family="'Barlow Condensed',Arial,sans-serif">
+  <defs>
+    <radialGradient id="neb1" cx="30%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#501090" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#501090" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="neb2" cx="75%" cy="65%" r="50%">
+      <stop offset="0%" stop-color="#1e3ca0" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1e3ca0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="neb3" cx="55%" cy="20%" r="40%">
+      <stop offset="0%" stop-color="#a02850" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#a02850" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Deep space bg -->
+  <rect width="400" height="260" fill="#02020f"/>
+  <rect width="400" height="260" fill="url(#neb1)"/>
+  <rect width="400" height="260" fill="url(#neb2)"/>
+  <rect width="400" height="260" fill="url(#neb3)"/>
+
+  <!-- Stars -->
+  <circle cx="18" cy="22" r="1" fill="white" opacity="0.7"/>
+  <circle cx="55" cy="8"  r="0.8" fill="white" opacity="0.5"/>
+  <circle cx="90" cy="30" r="1.2" fill="white" opacity="0.8"/>
+  <circle cx="140" cy="12" r="0.7" fill="white" opacity="0.6"/>
+  <circle cx="200" cy="5"  r="1"  fill="white" opacity="0.75"/>
+  <circle cx="260" cy="18" r="0.8" fill="white" opacity="0.5"/>
+  <circle cx="310" cy="9"  r="1.1" fill="white" opacity="0.7"/>
+  <circle cx="370" cy="25" r="0.9" fill="white" opacity="0.6"/>
+  <circle cx="38" cy="80"  r="0.7" fill="white" opacity="0.4"/>
+  <circle cx="180" cy="55" r="1"   fill="white" opacity="0.65"/>
+  <circle cx="340" cy="70" r="0.8" fill="white" opacity="0.55"/>
+  <circle cx="70" cy="190" r="0.9" fill="white" opacity="0.45"/>
+  <circle cx="230" cy="210" r="1"  fill="white" opacity="0.6"/>
+  <circle cx="380" cy="155" r="0.7" fill="white" opacity="0.5"/>
+  <circle cx="15" cy="240" r="1"   fill="white" opacity="0.55"/>
+  <circle cx="290" cy="250" r="0.8" fill="white" opacity="0.4"/>
+
+  <!-- Header bar -->
+  <rect x="0" y="0" width="400" height="36" fill="rgba(8,8,22,0.85)"/>
+  <rect x="0" y="34" width="400" height="2" fill="#f5a623"/>
+
+  <!-- NFL chip -->
+  <rect x="12" y="8" width="30" height="18" rx="3" fill="#f5a623"/>
+  <text x="27" y="21" text-anchor="middle" font-size="9" font-weight="900" fill="#080810">NFL</text>
+
+  <!-- Logo text -->
+  <text x="49" y="19" font-size="11" font-weight="800" fill="white" letter-spacing="1">STATS </text>
+  <text x="93" y="19" font-size="11" font-weight="800" fill="#f5a623" letter-spacing="1">DASHBOARD</text>
+
+  <!-- Live pill -->
+  <rect x="336" y="10" width="52" height="16" rx="8" fill="rgba(255,61,61,0.12)" stroke="rgba(255,61,61,0.3)" stroke-width="0.8"/>
+  <circle cx="346" cy="18" r="3" fill="#ff3d3d"/>
+  <text x="354" y="22" font-size="7" font-weight="700" fill="#ff3d3d" letter-spacing="1">LIVE</text>
+
+  <!-- Ticker bar -->
+  <rect x="0" y="36" width="400" height="14" fill="rgba(6,6,18,0.7)"/>
+  <text x="8" y="47" font-size="7" font-weight="700" fill="white">KC</text>
+  <text x="22" y="47" font-size="7" font-weight="900" fill="#f5a623">22–40</text>
+  <text x="50" y="47" font-size="7" font-weight="700" fill="white">PHI</text>
+  <text x="68" y="47" font-size="6" fill="#6b7280">SUPER BOWL</text>
+  <text x="115" y="47" font-size="7" fill="rgba(255,255,255,0.2)">·</text>
+  <text x="122" y="47" font-size="7" font-weight="700" fill="white">BUF</text>
+  <text x="138" y="47" font-size="7" font-weight="900" fill="#f5a623">29–32</text>
+  <text x="165" y="47" font-size="7" font-weight="700" fill="white">KC</text>
+  <text x="179" y="47" font-size="6" fill="#6b7280">AFC CHAMP</text>
+  <text x="224" y="47" font-size="7" fill="rgba(255,255,255,0.2)">·</text>
+  <text x="231" y="47" font-size="7" font-weight="700" fill="white">DET</text>
+  <text x="248" y="47" font-size="7" font-weight="900" fill="#f5a623">31–45</text>
+  <text x="273" y="47" font-size="7" font-weight="700" fill="white">WAS</text>
+  <text x="295" y="47" font-size="6" fill="#6b7280">DIVISIONAL</text>
+  <text x="350" y="47" font-size="7" fill="rgba(255,255,255,0.2)">·</text>
+
+  <!-- Hero stat cards -->
+  <rect x="10" y="58" width="87" height="48" rx="6" fill="rgba(14,14,30,0.8)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="10" y="58" width="87" height="3" rx="2" fill="#f5a623"/>
+  <text x="14" y="70" font-size="5.5" font-weight="700" fill="#6b7280" letter-spacing="0.8">PASSING LEADER</text>
+  <text x="14" y="80" font-size="8" font-weight="800" fill="white">JOE BURROW</text>
+  <text x="14" y="89" font-size="6" fill="#6b7280">CIN · QB</text>
+  <text x="14" y="101" font-size="16" font-weight="900" fill="#f5a623">4,918</text>
+  <text x="60" y="101" font-size="6" fill="#6b7280">YDS</text>
+
+  <rect x="104" y="58" width="87" height="48" rx="6" fill="rgba(14,14,30,0.8)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="104" y="58" width="87" height="3" rx="2" fill="#2979ff"/>
+  <text x="108" y="70" font-size="5.5" font-weight="700" fill="#6b7280" letter-spacing="0.8">RUSHING LEADER</text>
+  <text x="108" y="80" font-size="8" font-weight="800" fill="white">SAQUON BARKLEY</text>
+  <text x="108" y="89" font-size="6" fill="#6b7280">PHI · RB</text>
+  <text x="108" y="101" font-size="16" font-weight="900" fill="#2979ff">2,005</text>
+  <text x="154" y="101" font-size="6" fill="#6b7280">YDS</text>
+
+  <rect x="198" y="58" width="87" height="48" rx="6" fill="rgba(14,14,30,0.8)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="198" y="58" width="87" height="3" rx="2" fill="#ff3d3d"/>
+  <text x="202" y="70" font-size="5.5" font-weight="700" fill="#6b7280" letter-spacing="0.8">RECEIVING LEADER</text>
+  <text x="202" y="80" font-size="8" font-weight="800" fill="white">JA'MARR CHASE</text>
+  <text x="202" y="89" font-size="6" fill="#6b7280">CIN · WR</text>
+  <text x="202" y="101" font-size="16" font-weight="900" fill="#ff3d3d">1,708</text>
+  <text x="248" y="101" font-size="6" fill="#6b7280">YDS</text>
+
+  <rect x="303" y="58" width="87" height="48" rx="6" fill="rgba(14,14,30,0.8)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="303" y="58" width="87" height="3" rx="2" fill="#00e676"/>
+  <text x="307" y="70" font-size="5.5" font-weight="700" fill="#6b7280" letter-spacing="0.8">TD LEADER</text>
+  <text x="307" y="80" font-size="8" font-weight="800" fill="white">DERRICK HENRY</text>
+  <text x="307" y="89" font-size="6" fill="#6b7280">BAL · RB</text>
+  <text x="307" y="101" font-size="16" font-weight="900" fill="#00e676">16</text>
+  <text x="323" y="101" font-size="6" fill="#6b7280">TDs</text>
+
+  <!-- Standings card -->
+  <rect x="10" y="114" width="128" height="96" rx="6" fill="rgba(14,14,30,0.8)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="10" y="114" width="128" height="22" fill="rgba(255,255,255,0.03)" rx="6"/>
+  <rect x="10" y="128" width="128" height="8" fill="rgba(255,255,255,0.03)"/>
+  <text x="15" y="126" font-size="7" font-weight="800" fill="white" letter-spacing="1">STANDINGS</text>
+  <rect x="80" y="117" width="22" height="12" rx="2" fill="#f5a623"/>
+  <text x="91" y="126" text-anchor="middle" font-size="6" font-weight="700" fill="#080810">AFC</text>
+  <rect x="104" y="117" width="22" height="12" rx="2" fill="transparent" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <text x="115" y="126" text-anchor="middle" font-size="6" font-weight="700" fill="#6b7280">NFC</text>
+  <!-- division -->
+  <text x="15" y="138" font-size="5" font-weight="700" fill="#6b7280" letter-spacing="0.6">AFC WEST</text>
+  <!-- teams -->
+  <circle cx="18" cy="146" r="3" fill="#E31837"/>
+  <text x="24" y="149" font-size="6.5" font-weight="700" fill="white">KC</text>
+  <text x="90" y="149" font-size="6.5" font-weight="700" fill="white">15</text>
+  <text x="105" y="149" font-size="6.5" font-weight="700" fill="white">2</text>
+  <text x="118" y="149" font-size="6" fill="#6b7280">.882</text>
+  <circle cx="18" cy="157" r="3" fill="#0080C6"/>
+  <text x="24" y="160" font-size="6.5" font-weight="700" fill="white">LAC</text>
+  <text x="90" y="160" font-size="6.5" font-weight="700" fill="white">11</text>
+  <text x="105" y="160" font-size="6.5" font-weight="700" fill="white">6</text>
+  <text x="118" y="160" font-size="6" fill="#6b7280">.647</text>
+  <circle cx="18" cy="168" r="3" fill="#FB4F14"/>
+  <text x="24" y="171" font-size="6.5" font-weight="700" fill="white">DEN</text>
+  <text x="90" y="171" font-size="6.5" font-weight="700" fill="white">10</text>
+  <text x="105" y="171" font-size="6.5" font-weight="700" fill="white">7</text>
+  <text x="118" y="171" font-size="6" fill="#6b7280">.588</text>
+  <text x="15" y="183" font-size="5" font-weight="700" fill="#6b7280" letter-spacing="0.6">AFC NORTH</text>
+  <circle cx="18" cy="191" r="3" fill="#241773"/>
+  <text x="24" y="194" font-size="6.5" font-weight="700" fill="white">BAL</text>
+  <text x="90" y="194" font-size="6.5" font-weight="700" fill="white">12</text>
+  <text x="105" y="194" font-size="6.5" font-weight="700" fill="white">5</text>
+  <text x="118" y="194" font-size="6" fill="#6b7280">.706</text>
+  <circle cx="18" cy="202" r="3" fill="#FFB612"/>
+  <text x="24" y="205" font-size="6.5" font-weight="700" fill="white">PIT</text>
+  <text x="90" y="205" font-size="6.5" font-weight="700" fill="white">10</text>
+  <text x="105" y="205" font-size="6.5" font-weight="700" fill="white">7</text>
+  <text x="118" y="205" font-size="6" fill="#6b7280">.588</text>
+
+  <!-- Stat leaders chart card -->
+  <rect x="146" y="114" width="244" height="96" rx="6" fill="rgba(14,14,30,0.8)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="146" y="114" width="244" height="22" fill="rgba(255,255,255,0.03)" rx="6"/>
+  <text x="152" y="126" font-size="7" font-weight="800" fill="white" letter-spacing="1">STAT LEADERS</text>
+  <rect x="270" y="117" width="34" height="12" rx="2" fill="#f5a623"/>
+  <text x="287" y="126" text-anchor="middle" font-size="6" font-weight="700" fill="#080810">PASSING</text>
+  <rect x="306" y="117" width="34" height="12" rx="2" fill="transparent" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <text x="323" y="126" text-anchor="middle" font-size="6" font-weight="700" fill="#6b7280">RUSHING</text>
+  <rect x="342" y="117" width="40" height="12" rx="2" fill="transparent" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <text x="362" y="126" text-anchor="middle" font-size="6" font-weight="700" fill="#6b7280">RECEIVING</text>
+  <!-- bars -->
+  <text x="152" y="145" font-size="6.5" font-weight="700" fill="white">Burrow</text>
+  <rect x="195" y="138" width="160" height="8" rx="2" fill="rgba(255,255,255,0.06)"/>
+  <rect x="195" y="138" width="160" height="8" rx="2" fill="#f5a623" opacity="0.8"/>
+  <text x="360" y="145" font-size="6.5" font-weight="700" fill="white">4,918</text>
+
+  <text x="152" y="159" font-size="6.5" font-weight="700" fill="white">Darnold</text>
+  <rect x="195" y="152" width="141" height="8" rx="2" fill="rgba(255,255,255,0.06)"/>
+  <rect x="195" y="152" width="141" height="8" rx="2" fill="#f5a623" opacity="0.7"/>
+  <text x="360" y="159" font-size="6.5" font-weight="700" fill="white">4,319</text>
+
+  <text x="152" y="173" font-size="6.5" font-weight="700" fill="white">Jackson</text>
+  <rect x="195" y="166" width="136" height="8" rx="2" fill="rgba(255,255,255,0.06)"/>
+  <rect x="195" y="166" width="136" height="8" rx="2" fill="#f5a623" opacity="0.65"/>
+  <text x="360" y="173" font-size="6.5" font-weight="700" fill="white">4,172</text>
+
+  <text x="152" y="187" font-size="6.5" font-weight="700" fill="white">Hurts</text>
+  <rect x="195" y="180" width="127" height="8" rx="2" fill="rgba(255,255,255,0.06)"/>
+  <rect x="195" y="180" width="127" height="8" rx="2" fill="#f5a623" opacity="0.58"/>
+  <text x="360" y="187" font-size="6.5" font-weight="700" fill="white">3,903</text>
+
+  <text x="152" y="201" font-size="6.5" font-weight="700" fill="white">Allen</text>
+  <rect x="195" y="194" width="122" height="8" rx="2" fill="rgba(255,255,255,0.06)"/>
+  <rect x="195" y="194" width="122" height="8" rx="2" fill="#f5a623" opacity="0.5"/>
+  <text x="360" y="201" font-size="6.5" font-weight="700" fill="white">3,731</text>
+
+  <!-- Recent games -->
+  <rect x="10" y="217" width="117" height="36" rx="5" fill="rgba(22,22,48,0.75)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="13" y="226" width="3" height="20" rx="1.5" fill="#E31837"/>
+  <text x="19" y="234" font-size="7" font-weight="700" fill="white">KC</text>
+  <text x="19" y="244" font-size="5.5" fill="#6b7280">Chiefs</text>
+  <text x="58" y="237" text-anchor="middle" font-size="11" font-weight="900" fill="#f5a623">22–40</text>
+  <text x="58" y="247" text-anchor="middle" font-size="5.5" fill="#6b7280">SUPER BOWL</text>
+  <rect x="111" y="226" width="3" height="20" rx="1.5" fill="#004C54"/>
+  <text x="107" y="234" text-anchor="end" font-size="7" font-weight="700" fill="white">PHI</text>
+  <text x="107" y="244" text-anchor="end" font-size="5.5" fill="#6b7280">Eagles</text>
+
+  <rect x="134" y="217" width="117" height="36" rx="5" fill="rgba(22,22,48,0.75)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="137" y="226" width="3" height="20" rx="1.5" fill="#5A1414"/>
+  <text x="143" y="234" font-size="7" font-weight="700" fill="white">WAS</text>
+  <text x="143" y="244" font-size="5.5" fill="#6b7280">Commanders</text>
+  <text x="183" y="237" text-anchor="middle" font-size="11" font-weight="900" fill="#f5a623">23–55</text>
+  <text x="183" y="247" text-anchor="middle" font-size="5.5" fill="#6b7280">NFC CHAMP</text>
+  <rect x="248" y="226" width="3" height="20" rx="1.5" fill="#004C54"/>
+  <text x="244" y="234" text-anchor="end" font-size="7" font-weight="700" fill="white">PHI</text>
+  <text x="244" y="244" text-anchor="end" font-size="5.5" fill="#6b7280">Eagles</text>
+
+  <rect x="258" y="217" width="117" height="36" rx="5" fill="rgba(22,22,48,0.75)" stroke="rgba(255,255,255,0.14)" stroke-width="0.6"/>
+  <rect x="261" y="226" width="3" height="20" rx="1.5" fill="#00338D"/>
+  <text x="267" y="234" font-size="7" font-weight="700" fill="white">BUF</text>
+  <text x="267" y="244" font-size="5.5" fill="#6b7280">Bills</text>
+  <text x="307" y="237" text-anchor="middle" font-size="11" font-weight="900" fill="#f5a623">29–32</text>
+  <text x="307" y="247" text-anchor="middle" font-size="5.5" fill="#6b7280">AFC CHAMP</text>
+  <rect x="372" y="226" width="3" height="20" rx="1.5" fill="#E31837"/>
+  <text x="368" y="234" text-anchor="end" font-size="7" font-weight="700" fill="white">KC</text>
+  <text x="368" y="244" text-anchor="end" font-size="5.5" fill="#6b7280">Chiefs</text>
+</svg>

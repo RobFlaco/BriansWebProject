@@ -1,13 +1,13 @@
 {
   "bio": {
+    "greeting": "Hello, I'm",
     "name": "Brian Robles",
     "tagline1": "Musical Artist &",
     "tagline2": "Computer Science Student",
-    "greeting": "Hello, I'm",
     "profileImage": "img/TrashBallCrop.JPEG",
     "github": "https://github.com/RobFlaco",
     "linkedin": "https://www.linkedin.com/in/brian-robles-45116032a",
-    "resumePDF": "Brian_Robles_Frontend_Resume.pdf"
+    "resumePDF": "Brian_Robles_Resume.docx"
   },
   "albums": [
     {
@@ -76,7 +76,25 @@
       "image": "img/Project1.jpg",
       "description": "This is one of my first projects in web development. It is a fully functional music player built with HTML, CSS, and JavaScript. It features three albums, each in various lengths, with the ability to play, pause, skip forward, and skip backward. It also features an interactive progress bar that updates as the song plays, background color that updates based on the album, and a responsive design that looks good on both desktop and mobile devices.",
       "link": "MusicPlayer.html",
-      "github": "https://github.com/RobFlaco/BriansWebProject",
+      "github": "https://github.com/RobFlaco/BriansWebProject/blob/main/MusicPlayer.html",
+      "tags": ["HTML", "CSS", "JavaScript"]
+    },
+    {
+      "id": "nfl-dashboard",
+      "title": "NFL Stats Dashboard",
+      "image": "img/nfl-preview.svg",
+      "description": "A live NFL stats dashboard featuring a scrolling score ticker, season leader cards with animated counters, full AFC/NFC standings, stat leader charts powered by Chart.js, and a real-time player search that pulls data from the ESPN public API — including player bios, headshots, and season stats by position. Built with vanilla HTML, CSS, and JavaScript. Features a galaxy background that matches the portfolio theme.",
+      "link": "nfl-dashboard.html",
+      "github": "https://github.com/RobFlaco/BriansWebProject/blob/main/nfl-dashboard.html",
+      "tags": ["HTML", "CSS", "JavaScript", "Chart.js", "REST API"]
+    },
+    {
+      "id": "Couch-Brotato",
+      "title": "Couch Brotato",
+      "image": "img/couchbrotato.png",
+      "description": "A website I designed for choosing a movie based on streaming service and genre. It features a rating system that pulls data from the TMDB API, listing movies and tv shows in order from highest to lowest rated. The website also shows the previews for movies upon click and has a feature to add movies to a watchlist that is stored in local storage. Built with vanilla HTML, CSS, and JavaScript.",
+      "link": "https://www.couchbrotato.com",
+      "github": "https://github.com/RobFlaco/CouchBrotato",
       "tags": ["HTML", "CSS", "JavaScript"]
     }
   ]

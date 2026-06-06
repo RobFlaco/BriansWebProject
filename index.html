@@ -48,7 +48,7 @@
     <!-- Projects section — filled from content.json -->
     <section id="projects" class="projects">
         <h2 class="section-title">Projects</h2>
-        <div id="projects-grid"></div>
+        <div id="projects-grid" class="projects-grid"></div>
     </section>
 
     <!-- Music section — filled from content.json -->
@@ -99,18 +99,20 @@
         function renderProjects(projects) {
             const grid = document.getElementById('projects-grid');
             grid.innerHTML = projects.map(p => `
-                <a href="${p.link}">
-                    <div class="project-card">
-                        <img src="${p.image}" alt="">
-                        <h3>${p.title}</h3>
-                        <p>${p.description}</p>
-                        <div class="btn-group">
-                            <a href="${p.github}" target="_blank" class="btn">Github Repo</a>
-                            <a href="${p.link}" class="btn">${p.title}</a>
-                        </div>
+                <div class="project-card">
+                    <img src="${p.image}" alt="">
+                    <h3>${p.title}</h3>
+                    <p>${p.description}</p>
+                    <div class="btn-group">
+                        <a href="${p.github}" target="_blank" class="btn" onclick="event.stopPropagation()">Github Repo</a>
+                        <a href="${p.link}" class="btn" onclick="event.stopPropagation()">${p.title}</a>
                     </div>
-                </a>
+                </div>
             `).join('');
+            document.querySelectorAll('.project-card').forEach((card, i) => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => window.location.href = projects[i].link);
+            });
         }
 
         function renderAlbums(albums) {
@@ -121,11 +123,15 @@
                     <h3>${a.title}</h3>
                     <p>${a.description}</p>
                     <div class="btn-group">
-                        <a href="${a.spotify}" target="_blank" class="btn">Spotify</a>
-                        <a href="${a.appleMusic}" target="_blank" class="btn">Apple Music</a>
+                        <a href="${a.spotify}" target="_blank" class="btn" onclick="event.stopPropagation()">Spotify</a>
+                        <a href="${a.appleMusic}" target="_blank" class="btn" onclick="event.stopPropagation()">Apple Music</a>
                     </div>
                 </div>
             `).join('');
+            document.querySelectorAll('.album-card').forEach((card, i) => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => window.open(albums[i].spotify, '_blank'));
+            });
         }
 
         loadContent();
